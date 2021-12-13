@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Intervention} from "./models/Intervention";
 import {InterventionService} from "./service/InterventionService";
 import {SearchFieldsInterface} from "./models/SearchFieldsInterface";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-root',
@@ -13,9 +14,9 @@ export class AppComponent {
   // DONE
   // public interventionList: Intervention[] = InterventionService.getInterventionArray();
 
-  public searchFields: SearchFieldsInterface;
+  public searchFields: FormGroup;
 
-  search(searchFields: SearchFieldsInterface): void {
+  search(searchFields: FormGroup): void {
     this.searchFields = searchFields;
   }
 

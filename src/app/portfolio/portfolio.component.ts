@@ -7,9 +7,7 @@ import {WorkflowStates} from "../models/WorkflowState";
 import {WorkflowService} from "../service/WorkflowService";
 import {User} from "../models/User";
 import {UserService} from "../service/UserService";
-import {SearchFieldsInterface} from "../models/SearchFieldsInterface";
-import {fakeAsync} from "@angular/core/testing";
-import {runCommand} from "@angular/cli/models/command-runner";
+import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'portfolio',
@@ -22,10 +20,20 @@ export class PortfolioComponent implements OnInit, OnChanges {
   interventionList: Intervention[] = InterventionService.getInterventionArray();
 
   @Input()
-  searchOptions: SearchFieldsInterface;
+  searchOptions: FormGroup;
+
+  logSearchOptions() {
+    console.log(this.searchOptions);
+  }
+
+  logCountryOption(){
+    console.log(this.searchOptions.get("countryOption").value);
+  }
 
   // TODO: rename to selectedStatus
   // DONE
+
+  // selectStatus: FormControl;
   selectStatus: number = 0;
 
   /**---------------Filter By Statues------------------*/
@@ -101,50 +109,50 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   filterBYCountry(): void {
     this.onStatusChange();
-    if (this.searchOptions.countryOption && this.searchOptions.countryOption !== 0) {
+    if (this.searchOptions.get("countryOption").value && this.searchOptions.get("countryOption").value !== 0) {
       this.interventionList = this.interventionList.filter(currentElement => {
-          return currentElement.InterventionCountryID === Number(this.searchOptions.countryOption);
+          return currentElement.InterventionCountryID === Number(this.searchOptions.get("countryOption").value);
         }
       );
     }
   }
 
   filterByKeywordOption(): void {
-    if (this.searchOptions.keywordOption && (
-      this.searchOptions.checkboxOption["CodeOfTheIntervention"] ||
-      this.searchOptions.checkboxOption["TitleOfTheIntervention"] ||
-      this.searchOptions.checkboxOption["InterventionShortName"] ||
-      this.searchOptions.checkboxOption["InterventionDescription"])) {
+    if (this.searchOptions.get("keywordOption").value && (
+      this.searchOptions.get("CodeOfTheIntervention").value ||
+      this.searchOptions.get("TitleOfTheIntervention").value ||
+      this.searchOptions.get("InterventionShortName").value ||
+      this.searchOptions.get("InterventionDescription").value)) {
 
-      this.searchOptions.keywordOption = this.searchOptions.keywordOption.trim();
-      const checkboxOptions = this.searchOptions.checkboxOption
+      let keywordOption: string = this.searchOptions.get("keywordOption").value.trim();
+      // const checkboxOptions = this.searchOptions.checkboxOption
 
       this.interventionList = this.interventionList.filter(intervention =>
-        (checkboxOptions["CodeOfTheIntervention"] && intervention.InterventionCode.includes(this.searchOptions.keywordOption)) ||
-        (checkboxOptions["TitleOfTheIntervention"] && intervention.Title.includes(this.searchOptions.keywordOption)) ||
-        (checkboxOptions["InterventionShortName"] && intervention.ShortName.includes(this.searchOptions.keywordOption)) ||
-        (checkboxOptions["InterventionDescription"] && intervention.Description.includes(this.searchOptions.keywordOption)));
+        (this.searchOptions.get("CodeOfTheIntervention").value && intervention.InterventionCode.includes(keywordOption)) ||
+        (this.searchOptions.get("TitleOfTheIntervention").value && intervention.Title.includes(keywordOption)) ||
+        (this.searchOptions.get("InterventionShortName").value && intervention.ShortName.includes(keywordOption)) ||
+        (this.searchOptions.get("InterventionDescription").value && intervention.Description.includes(keywordOption)));
     }
   }
 
   filterByActualDate(): void {
-    if (this.searchOptions.dateFrom && this.searchOptions.dateTo) {
+    if (this.searchOptions.get("dateFrom").value && this.searchOptions.get("dateTo").value) {
       this.interventionList = this.interventionList.filter(intervention => {
           let actualStartDate = new Date(intervention.ActualStartDate);
-          return new Date(this.searchOptions.dateFrom) < actualStartDate &&
-            actualStartDate < new Date(this.searchOptions.dateTo);
+          return new Date(this.searchOptions.get("dateFrom").value) < actualStartDate &&
+            actualStartDate < new Date(this.searchOptions.get("dateTo").value);
         }
       );
-    } else if (this.searchOptions.dateFrom && !this.searchOptions.dateTo) {
+    } else if (this.searchOptions.get("dateFrom").value && !this.searchOptions.get("dateTo").value) {
       this.interventionList = this.interventionList.filter(intervention => {
           let actualStartDate = new Date(intervention.ActualStartDate);
-          return new Date(this.searchOptions.dateFrom) < actualStartDate;
+          return new Date(this.searchOptions.get("dateFrom").value) < actualStartDate;
         }
       );
-    } else if (!this.searchOptions.dateFrom && this.searchOptions.dateTo) {
+    } else if (!this.searchOptions.get("dateFrom").value && this.searchOptions.get("dateTo").value) {
       this.interventionList = this.interventionList.filter(intervention => {
           let actualStartDate = new Date(intervention.ActualStartDate);
-          return actualStartDate < new Date(this.searchOptions.dateTo);
+          return actualStartDate < new Date(this.searchOptions.get("dateTo").value);
         }
       );
     }
@@ -479,6 +487,7 @@ export class PortfolioComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    // this.selectStatus = new FormControl(0);
   }
 
   tempInterventionsBeforeSearch = this.interventionList;
@@ -487,5 +496,4 @@ export class PortfolioComponent implements OnInit, OnChanges {
     this.interventionList = this.tempInterventionsBeforeSearch;
     this.generalSearch();
   }
-
 }

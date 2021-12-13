@@ -1,6 +1,5 @@
-<!--<button (click)="logSearchOptions()">Log options</button>-->
-<!--<button (click)="logList()">Log list</button>-->
-<!--<button (click)="logTempInterventionList()">Log temp list</button>-->
+<button (click)="logSearchOptions()">Log options</button>
+<button (click)="logCountryOption()">Log country</button>
 
 <div>
   <div [ngClass]="'flex'">
@@ -57,9 +56,7 @@
       </th>
     </tr>
 
-    <tr #currentRow *ngFor="let currentIntervention of interventionList"
-        (mouseover)="currentRow.style.background='#ccc9c9'"
-        (mouseleave)="currentRow.style.background='white'">
+    <tr hover *ngFor="let currentIntervention of interventionList">
       <td><a href="">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
       <td>{{currentIntervention.CommericalName}}</td>

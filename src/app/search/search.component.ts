@@ -1,10 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Country} from "../models/Country";
 import {CountryService} from "../service/CountryService";
-import {Intervention} from "../models/Intervention";
-import {PortfolioComponent} from "../portfolio/portfolio.component";
-import {InterventionService} from "../service/InterventionService";
-import {SearchFieldsInterface} from "../models/SearchFieldsInterface";
+
+import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'search',
@@ -13,41 +11,40 @@ import {SearchFieldsInterface} from "../models/SearchFieldsInterface";
 })
 export class SearchComponent {
   @Output()
-  onSearch = new EventEmitter<SearchFieldsInterface>();
+  onSearch = new EventEmitter<FormGroup>();
   @Output()
   onReset = new EventEmitter<void>();
 
   title: string = "Search";
-  searchFields: SearchFieldsInterface = {
-    countryOption: 0,
-    keywordOption: "",
-    checkboxOption: {
-      CodeOfTheIntervention: false,
-      TitleOfTheIntervention: false,
-      InterventionShortName: false,
-      InterventionDescription: false,
-    },
-    dateFrom: "",
-    dateTo: ""
-  }
+
+  searchFields: FormGroup = new FormGroup({
+      countryOption: new FormControl(0),
+      keywordOption: new FormControl(""),
+      CodeOfTheIntervention: new FormControl(false),
+      TitleOfTheIntervention: new FormControl(false),
+      InterventionShortName: new FormControl(false),
+      InterventionDescription: new FormControl(false),
+      dateFrom: new FormControl(""),
+      dateTo: new FormControl("")
+    }
+  )
 
   search(): void {
-    this.onSearch.emit({...this.searchFields});
+    this.onSearch.emit({...this.searchFields} as FormGroup);
   }
 
   reset(): void {
-    this.searchFields = {
-      countryOption: 0,
-      keywordOption: "",
-      checkboxOption: {
-        CodeOfTheIntervention: false,
-        TitleOfTheIntervention: false,
-        InterventionShortName: false,
-        InterventionDescription: false,
-      },
-      dateFrom: "",
-      dateTo: ""
-    }
+    this.searchFields = new FormGroup({
+        countryOption: new FormControl(0),
+        keywordOption: new FormControl(""),
+        CodeOfTheIntervention: new FormControl(false),
+        TitleOfTheIntervention: new FormControl(false),
+        InterventionShortName: new FormControl(false),
+        InterventionDescription: new FormControl(false),
+        dateFrom: new FormControl(""),
+        dateTo: new FormControl("")
+      }
+    )
     this.onReset.emit();
   }
 
