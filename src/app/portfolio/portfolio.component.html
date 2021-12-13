@@ -1,0 +1,76 @@
+<!--<button (click)="logSearchOptions()">Log options</button>-->
+<!--<button (click)="logList()">Log list</button>-->
+<!--<button (click)="logTempInterventionList()">Log temp list</button>-->
+
+<div>
+  <div [ngClass]="'flex'">
+    <div [ngClass]="'statusStyle'">
+      Status
+      <select [(ngModel)]="selectStatus" (change)="onStatusChange()">
+        <!--          TODO: use id instead of name in value-->
+        <!--          DONE:-->
+        <option [value]="'0'" selected>All Statuses</option>
+        <option *ngFor="let currentWorkflow of getWorkflowArray()"
+                [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
+      </select>
+    </div>
+
+    <div>
+      <button [ngClass]="'searchButtonStyle'">Create New Intervention</button>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Code of the Intervention<br><br>
+        <button (click)="sortByCodeInterventionASC()" [ngStyle]="{background: isCodeAscPressed ? 'red':''}">↑</button>
+        <button (click)="sortByCodeInterventionDESC()" [ngStyle]="{background: isCodeDescPressed ? 'red':''}">↓</button>
+      </th>
+      <th>Short Name<br><br>
+        <button (click)="sortByShortNameASC()" [ngStyle]="{background: isShortNameAscPressed ? 'red':''}">↑</button>
+        <button (click)="sortByShortNameDESC()" [ngStyle]="{background: isShortNameDescPressed ? 'red':''}">↓</button>
+      </th>
+      <th>Official Intervention Name<br><br>
+        <button (click)="sortByOfficialInterventionNameASC()"
+                [ngStyle]="{background: isOfficialNameAscPressed ? 'red':''}">↑
+        </button>
+        <button (click)="sortByOfficialInterventionNameDESC()"
+                [ngStyle]="{background: isOfficialNameDescPressed ? 'red':''}">↓
+        </button>
+      </th>
+      <th>Country<br><br>
+        <button (click)="sortByCountryASC()" [ngStyle]="{background: isCountryAscPressed ? 'red':''}">↑</button>
+        <button (click)="sortByCountryDESC()" [ngStyle]="{background: isCountryDescPressed ? 'red':''}">↓</button>
+      </th>
+      <th>Status<br><br>
+        <button (click)="sortByStatusASC()" [ngStyle]="{background: isStatusAscPressed ? 'red':''}">↑</button>
+        <button (click)="sortByStatusDESC()" [ngStyle]="{background: isStatusDescPressed ? 'red':''}">↓</button>
+      </th>
+      <th>Last Updated By<br><br>
+        <button (click)="sortByUsersASC()" [ngStyle]="{background: isUsersAscPressed ? 'red':''}">↑</button>
+        <button (click)="sortByUsersDESC()" [ngStyle]="{background: isUsersDescPressed ? 'red':''}">↓</button>
+      </th>
+      <th>Last Updated On<br><br>
+        <button (click)="sortByDateASC()" [ngStyle]="{background: isDateAscPressed ? 'red':''}">↑</button>
+        <button (click)="sortByDateDESC()" [ngStyle]="{background: isDateDescPressed ? 'red':''}">↓</button>
+      </th>
+    </tr>
+
+    <tr #currentRow *ngFor="let currentIntervention of interventionList"
+        (mouseover)="currentRow.style.background='#ccc9c9'"
+        (mouseleave)="currentRow.style.background='white'">
+      <td><a href="">{{currentIntervention.InterventionCode}}</a></td>
+      <td>{{currentIntervention.ShortName}}</td>
+      <td>{{currentIntervention.CommericalName}}</td>
+      <td>{{getCountryName(getCountryById(currentIntervention.InterventionCountryID))}}</td>
+      <td>{{getWorkflowName(getWorkflowById(currentIntervention.workflowStateId))}}</td>
+      <td>{{getUserName(getUserById(currentIntervention.UpdatedUserID))}}</td>
+      <td>{{getDate(currentIntervention.DateUpdated)}}</td>
+    </tr>
+    </thead>
+  </table>
+
+</div>
+
+

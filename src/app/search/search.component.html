@@ -1,0 +1,54 @@
+<div [ngClass]="'flex'">
+  <div style="border: solid">
+    <div [ngClass]="'searchDiv'">
+      <h2>{{title}}</h2>
+    </div>
+
+    <div [ngClass]="'buttonDiv'">
+      <button [ngClass]="'searchButtonStyle'" (click)="search()">SEARCH</button>
+      <button [ngClass]="'resetButtonStyle'" (click)="reset()">RESET</button>
+    </div>
+
+    <div [ngClass]="'countryListStyle'">
+      <div style="margin-left: 20px">
+        <p>Country</p>
+        <select [ngClass]="'inputStyle'" [(ngModel)]="searchFields.countryOption">
+          <option [value]="'Select One'">--Select One--</option>
+          <!--          TODO: use id instead of name in value-->
+          <!--          DONE-->
+          <option *ngFor="let currentCountry of getCountries()"
+                  [value]="currentCountry.countryId">{{currentCountry.name["3"]}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div [ngClass]="'keywordStyle'">
+      <div style="margin-left: 20px">
+        <p>Keyword</p>
+        <input [ngClass]="'inputStyle'" [(ngModel)]="searchFields.keywordOption">
+        <br><br>
+        <input type="checkbox" [(ngModel)]="searchFields.checkboxOption['CodeOfTheIntervention']">Code of the
+        intervention
+        <br>
+        <input type="checkbox" [(ngModel)]="searchFields.checkboxOption['TitleOfTheIntervention']">Title of the
+        intervention
+        <br>
+        <input type="checkbox" [(ngModel)]="searchFields.checkboxOption['InterventionShortName']">Intervention short
+        name
+        <br>
+        <input type="checkbox" [(ngModel)]="searchFields.checkboxOption['InterventionDescription']">Intervention
+        description
+      </div>
+    </div>
+
+    <div [ngClass]="'actualDateStyle'">
+      <div style="margin-left: 20px">
+        <h3>Actual Start Date</h3>
+        <p>From</p>
+        <input [ngClass]="'inputStyle'" type="date" [(ngModel)]="searchFields.dateFrom">
+        <p>To</p>
+        <input [ngClass]="'inputStyle'" type="date" [(ngModel)]="searchFields.dateTo">
+      </div>
+    </div>
+  </div>
+</div>

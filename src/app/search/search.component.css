@@ -1,0 +1,54 @@
+.actualDateStyle {
+  width: 300px;
+  height: 240px;
+  /*border-style: solid;*/
+}
+
+.buttonDiv {
+  width: 300px;
+  height: 50px;
+  /*border-style: solid;*/
+}
+
+.searchButtonStyle {
+  width: 100px;
+  height: 30px;
+  background-color: limegreen;
+  margin-left: 30px;
+  margin-top: 10px;
+}
+
+.resetButtonStyle {
+  width: 100px;
+  height: 30px;
+  background-color: white;
+  margin-left: 30px;
+}
+
+.countryListStyle {
+  width: 300px;
+  height: 80px;
+  /*border-style: solid;*/
+}
+
+.keywordStyle {
+  width: 300px;
+  height: 170px;
+  /*border-style: solid;*/
+}
+
+.inputStyle {
+  width: 250px;
+  height: 30px;
+}
+
+.searchDiv {
+  width: 300px;
+  height: 50px;
+  text-align: center;
+}
+
+.flex {
+  margin-top: 20px;
+  display: flex;
+}

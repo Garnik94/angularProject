@@ -1,0 +1,45 @@
+th {
+  border: solid;
+  background: #bbb8b8;
+  height: 50px;
+}
+
+tr {
+  height: 50px;
+  table-layout: auto;
+}
+
+th, tr, td {
+  border-bottom: solid;
+}
+
+table {
+  border-collapse: collapse;
+  border: solid;
+  table-layout: auto;
+  width: 1100px;
+}
+
+.statusStyle {
+  margin-left: 50px;
+}
+
+.searchButtonStyle {
+  width: 300px;
+  height: 30px;
+  background-color: limegreen;
+  margin-left: 500px;
+  margin-bottom: 10px;
+}
+
+.flex {
+  margin-top: 20px;
+  display: flex;
+}
+
+.isPressed {
+  background-color: red;
+}
+
+
+
