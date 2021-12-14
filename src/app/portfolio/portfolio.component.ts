@@ -22,14 +22,6 @@ export class PortfolioComponent implements OnInit, OnChanges {
   @Input()
   searchOptions: FormGroup;
 
-  logSearchOptions() {
-    console.log(this.searchOptions);
-  }
-
-  logCountryOption(){
-    console.log(this.searchOptions.get("countryOption").value);
-  }
-
   // TODO: rename to selectedStatus
   // DONE
 
@@ -109,50 +101,50 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   filterBYCountry(): void {
     this.onStatusChange();
-    if (this.searchOptions.get("countryOption").value && this.searchOptions.get("countryOption").value !== 0) {
+    if (this.searchOptions.value.countryOption && this.searchOptions.value.countryOption !== 0) {
       this.interventionList = this.interventionList.filter(currentElement => {
-          return currentElement.InterventionCountryID === Number(this.searchOptions.get("countryOption").value);
+          return currentElement.InterventionCountryID === Number(this.searchOptions.value.countryOption);
         }
       );
     }
   }
 
   filterByKeywordOption(): void {
-    if (this.searchOptions.get("keywordOption").value && (
-      this.searchOptions.get("CodeOfTheIntervention").value ||
-      this.searchOptions.get("TitleOfTheIntervention").value ||
-      this.searchOptions.get("InterventionShortName").value ||
-      this.searchOptions.get("InterventionDescription").value)) {
+    if (this.searchOptions.value.keywordOption && (
+      this.searchOptions.value.CodeOfTheIntervention ||
+      this.searchOptions.value.TitleOfTheIntervention ||
+      this.searchOptions.value.InterventionShortName ||
+      this.searchOptions.value.InterventionDescription)) {
 
-      let keywordOption: string = this.searchOptions.get("keywordOption").value.trim();
+      let keywordOption: string = this.searchOptions.value.keywordOption.trim();
       // const checkboxOptions = this.searchOptions.checkboxOption
 
       this.interventionList = this.interventionList.filter(intervention =>
-        (this.searchOptions.get("CodeOfTheIntervention").value && intervention.InterventionCode.includes(keywordOption)) ||
-        (this.searchOptions.get("TitleOfTheIntervention").value && intervention.Title.includes(keywordOption)) ||
-        (this.searchOptions.get("InterventionShortName").value && intervention.ShortName.includes(keywordOption)) ||
-        (this.searchOptions.get("InterventionDescription").value && intervention.Description.includes(keywordOption)));
+        (this.searchOptions.value.CodeOfTheIntervention && intervention.InterventionCode.includes(keywordOption)) ||
+        (this.searchOptions.value.TitleOfTheIntervention && intervention.Title.includes(keywordOption)) ||
+        (this.searchOptions.value.InterventionShortName && intervention.ShortName.includes(keywordOption)) ||
+        (this.searchOptions.value.InterventionDescription && intervention.Description.includes(keywordOption)));
     }
   }
 
   filterByActualDate(): void {
-    if (this.searchOptions.get("dateFrom").value && this.searchOptions.get("dateTo").value) {
+    if (this.searchOptions.value.dateFrom && this.searchOptions.value.dateTo) {
       this.interventionList = this.interventionList.filter(intervention => {
           let actualStartDate = new Date(intervention.ActualStartDate);
-          return new Date(this.searchOptions.get("dateFrom").value) < actualStartDate &&
-            actualStartDate < new Date(this.searchOptions.get("dateTo").value);
+          return new Date(this.searchOptions.value.dateFrom) < actualStartDate &&
+            actualStartDate < new Date(this.searchOptions.value.dateTo);
         }
       );
-    } else if (this.searchOptions.get("dateFrom").value && !this.searchOptions.get("dateTo").value) {
+    } else if (this.searchOptions.value.dateFrom && !this.searchOptions.value.dateTo) {
       this.interventionList = this.interventionList.filter(intervention => {
           let actualStartDate = new Date(intervention.ActualStartDate);
-          return new Date(this.searchOptions.get("dateFrom").value) < actualStartDate;
+          return new Date(this.searchOptions.value.dateFrom) < actualStartDate;
         }
       );
-    } else if (!this.searchOptions.get("dateFrom").value && this.searchOptions.get("dateTo").value) {
+    } else if (!this.searchOptions.value.dateFrom && this.searchOptions.value.dateTo) {
       this.interventionList = this.interventionList.filter(intervention => {
           let actualStartDate = new Date(intervention.ActualStartDate);
-          return actualStartDate < new Date(this.searchOptions.get("dateTo").value);
+          return actualStartDate < new Date(this.searchOptions.value.dateTo);
         }
       );
     }
