@@ -1,14 +1,16 @@
 import * as users from "../files/Users.json";
 import {User} from "../models/User";
+import {Injectable} from "@angular/core";
 
+@Injectable()
 export class UserService {
 
-  public static getAllUsersList() {
+  public getAllUsersList() {
     return users;
   }
 
-  public static getUserArray() {
-    return UserService.getAllUsersList().data
+  public getUserArray() {
+    return this.getAllUsersList().data
       .map(currentUser =>
         new User(
           currentUser.Email,
@@ -18,11 +20,11 @@ export class UserService {
       );
   }
 
-  public static getUserById(userId: number): User {
+  public getUserById(userId: number): User {
     return this.getUserArray().find(currentUser => currentUser.UserID === userId);
   }
 
-  public static getUserName(user: User): string {
+  public getUserName(user: User): string {
     return user.name["3"];
   }
 }

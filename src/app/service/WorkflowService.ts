@@ -1,14 +1,16 @@
 import * as workflows from "../files/WorkflowStates.json";
 import {WorkflowStates} from "../models/WorkflowState";
+import {Injectable} from "@angular/core";
 
+Injectable()
 export class WorkflowService {
 
-  public static getAllWorkflowList() {
+  public getAllWorkflowList() {
     return workflows;
   }
 
-  public static getWorkflowArray() {
-    return WorkflowService.getAllWorkflowList().data
+  public getWorkflowArray() {
+    return this.getAllWorkflowList().data
       .map(currentWorkflow =>
         new WorkflowStates(
           currentWorkflow.WFSTATEID,
@@ -16,11 +18,11 @@ export class WorkflowService {
       );
   }
 
-  public static getWorkflowById(workflowId: number): WorkflowStates {
+  public getWorkflowById(workflowId: number): WorkflowStates {
     return this.getWorkflowArray().find(currentWorkflow => currentWorkflow.WFSTATEID === workflowId);
   }
 
-  public static getWorkflowName(workflow: WorkflowStates): string {
+  public getWorkflowName(workflow: WorkflowStates): string {
     return workflow.name["3"];
   }
 }

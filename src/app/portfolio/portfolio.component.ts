@@ -1,13 +1,16 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Country} from "../models/Country";
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges
+} from '@angular/core';
 import {CountryService} from "../service/CountryService";
 import {Intervention} from "../models/Intervention";
 import {InterventionService} from "../service/InterventionService";
-import {WorkflowStates} from "../models/WorkflowState";
 import {WorkflowService} from "../service/WorkflowService";
-import {User} from "../models/User";
 import {UserService} from "../service/UserService";
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'portfolio',
@@ -16,8 +19,16 @@ import {FormControl, FormGroup} from "@angular/forms";
 })
 export class PortfolioComponent implements OnInit, OnChanges {
 
+  constructor(
+    public countryServiceInstance: CountryService,
+    public interventionServiceInstance: InterventionService,
+    public userServiceInstance: UserService,
+    public workflowServiceInstance: WorkflowService,
+  ) {
+  }
+
   // @Input()
-  interventionList: Intervention[] = InterventionService.getInterventionArray();
+  interventionList: Intervention[] = this.interventionServiceInstance.getInterventionArray();
 
   @Input()
   searchOptions: FormGroup;
@@ -88,10 +99,10 @@ export class PortfolioComponent implements OnInit, OnChanges {
     this.resetSortAndGetDefaultList();
     if (this.searchOptions === null && this.isSearchMode) {
       this.isSearchMode = false;
-      this.interventionList = InterventionService.getInterventionArray();
+      this.interventionList = this.interventionServiceInstance.getInterventionArray();
       this.onStatusChange();
     } else if (this.searchOptions === null && !this.isSearchMode) {
-      this.interventionList = InterventionService.getInterventionArray();
+      this.interventionList = this.interventionServiceInstance.getInterventionArray();
     } else {
       this.filterBYCountry();
       this.filterByKeywordOption();
@@ -100,51 +111,52 @@ export class PortfolioComponent implements OnInit, OnChanges {
   }
 
   filterBYCountry(): void {
+    const searchOptions = this.searchOptions.value;
     this.onStatusChange();
-    if (this.searchOptions.value.countryOption && this.searchOptions.value.countryOption !== 0) {
+    if (searchOptions.countryOption && searchOptions.countryOption !== 0) {
       this.interventionList = this.interventionList.filter(currentElement => {
-          return currentElement.InterventionCountryID === Number(this.searchOptions.value.countryOption);
+          return currentElement.InterventionCountryID === Number(searchOptions.countryOption);
         }
       );
     }
   }
 
   filterByKeywordOption(): void {
-    if (this.searchOptions.value.keywordOption && (
-      this.searchOptions.value.CodeOfTheIntervention ||
-      this.searchOptions.value.TitleOfTheIntervention ||
-      this.searchOptions.value.InterventionShortName ||
-      this.searchOptions.value.InterventionDescription)) {
+    const searchOptions = this.searchOptions.value;
+    if (searchOptions.keywordOption && (
+      searchOptions.CodeOfTheIntervention ||
+      searchOptions.TitleOfTheIntervention ||
+      searchOptions.InterventionShortName ||
+      searchOptions.InterventionDescription)) {
 
-      let keywordOption: string = this.searchOptions.value.keywordOption.trim();
-      // const checkboxOptions = this.searchOptions.checkboxOption
-
+      const keywordOption: string = searchOptions.keywordOption.trim();
       this.interventionList = this.interventionList.filter(intervention =>
-        (this.searchOptions.value.CodeOfTheIntervention && intervention.InterventionCode.includes(keywordOption)) ||
-        (this.searchOptions.value.TitleOfTheIntervention && intervention.Title.includes(keywordOption)) ||
-        (this.searchOptions.value.InterventionShortName && intervention.ShortName.includes(keywordOption)) ||
-        (this.searchOptions.value.InterventionDescription && intervention.Description.includes(keywordOption)));
+        (searchOptions.CodeOfTheIntervention && intervention.InterventionCode.includes(keywordOption)) ||
+        (searchOptions.TitleOfTheIntervention && intervention.Title.includes(keywordOption)) ||
+        (searchOptions.InterventionShortName && intervention.ShortName.includes(keywordOption)) ||
+        (searchOptions.InterventionDescription && intervention.Description.includes(keywordOption)));
     }
   }
 
   filterByActualDate(): void {
-    if (this.searchOptions.value.dateFrom && this.searchOptions.value.dateTo) {
+    const searchOptions = this.searchOptions.value;
+    if (searchOptions.dateFrom && searchOptions.dateTo) {
       this.interventionList = this.interventionList.filter(intervention => {
-          let actualStartDate = new Date(intervention.ActualStartDate);
-          return new Date(this.searchOptions.value.dateFrom) < actualStartDate &&
-            actualStartDate < new Date(this.searchOptions.value.dateTo);
+          const actualStartDate = new Date(intervention.ActualStartDate);
+          return new Date(searchOptions.dateFrom) < actualStartDate &&
+            actualStartDate < new Date(searchOptions.dateTo);
         }
       );
-    } else if (this.searchOptions.value.dateFrom && !this.searchOptions.value.dateTo) {
+    } else if (searchOptions.dateFrom && !searchOptions.dateTo) {
       this.interventionList = this.interventionList.filter(intervention => {
-          let actualStartDate = new Date(intervention.ActualStartDate);
-          return new Date(this.searchOptions.value.dateFrom) < actualStartDate;
+          const actualStartDate = new Date(intervention.ActualStartDate);
+          return new Date(searchOptions.dateFrom) < actualStartDate;
         }
       );
-    } else if (!this.searchOptions.value.dateFrom && this.searchOptions.value.dateTo) {
+    } else if (!searchOptions.dateFrom && searchOptions.dateTo) {
       this.interventionList = this.interventionList.filter(intervention => {
-          let actualStartDate = new Date(intervention.ActualStartDate);
-          return actualStartDate < new Date(this.searchOptions.value.dateTo);
+          const actualStartDate = new Date(intervention.ActualStartDate);
+          return actualStartDate < new Date(searchOptions.dateTo);
         }
       );
     }
@@ -292,8 +304,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
       return;
     }
     this.interventionList.sort((o1, o2) =>
-      this.getCountryName(this.getCountryById(o1.InterventionCountryID))
-        .localeCompare(this.getCountryName(this.getCountryById(o2.InterventionCountryID))))
+      this.countryServiceInstance.getCountryName(this.countryServiceInstance.getCountryById(o1.InterventionCountryID))
+        .localeCompare(this.countryServiceInstance.getCountryName(this.countryServiceInstance.getCountryById(o2.InterventionCountryID))))
     this.resetSortOptions();
     this.isCountryAscPressed = true;
     this.isCountryDescPressed = false
@@ -311,8 +323,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
       return;
     }
     this.interventionList.sort((o1, o2) =>
-      this.getCountryName(this.getCountryById(o2.InterventionCountryID))
-        .localeCompare(this.getCountryName(this.getCountryById(o1.InterventionCountryID))))
+      this.countryServiceInstance.getCountryName(this.countryServiceInstance.getCountryById(o2.InterventionCountryID))
+        .localeCompare(this.countryServiceInstance.getCountryName(this.countryServiceInstance.getCountryById(o1.InterventionCountryID))))
     this.resetSortOptions();
     this.isCountryAscPressed = false;
     this.isCountryDescPressed = true
@@ -333,8 +345,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
       return;
     }
     this.interventionList.sort((o1, o2) =>
-      this.getWorkflowName(this.getWorkflowById(o1.workflowStateId)).localeCompare(
-        this.getWorkflowName(this.getWorkflowById(o2.workflowStateId))));
+      this.workflowServiceInstance.getWorkflowName(this.workflowServiceInstance.getWorkflowById(o1.workflowStateId)).localeCompare(
+        this.workflowServiceInstance.getWorkflowName(this.workflowServiceInstance.getWorkflowById(o2.workflowStateId))));
     this.resetSortOptions();
     this.isStatusAscPressed = true;
     this.isStatusDescPressed = false
@@ -352,8 +364,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
       return;
     }
     this.interventionList.sort((o1, o2) =>
-      this.getWorkflowName(this.getWorkflowById(o2.workflowStateId)).localeCompare(
-        this.getWorkflowName(this.getWorkflowById(o1.workflowStateId))));
+      this.workflowServiceInstance.getWorkflowName(this.workflowServiceInstance.getWorkflowById(o2.workflowStateId)).localeCompare(
+        this.workflowServiceInstance.getWorkflowName(this.workflowServiceInstance.getWorkflowById(o1.workflowStateId))));
     this.resetSortOptions();
     this.isStatusAscPressed = false;
     this.isStatusDescPressed = true
@@ -374,8 +386,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
       return;
     }
     this.interventionList.sort((o1, o2) =>
-      this.getUserName(this.getUserById(o1.UpdatedUserID)).localeCompare(
-        this.getUserName(this.getUserById(o2.UpdatedUserID))));
+      this.userServiceInstance.getUserName(this.userServiceInstance.getUserById(o1.UpdatedUserID)).localeCompare(
+        this.userServiceInstance.getUserName(this.userServiceInstance.getUserById(o2.UpdatedUserID))));
     this.resetSortOptions();
     this.isUsersAscPressed = true;
     this.isUsersDescPressed = false
@@ -393,8 +405,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
       return;
     }
     this.interventionList.sort((o1, o2) =>
-      this.getUserName(this.getUserById(o2.UpdatedUserID)).localeCompare(
-        this.getUserName(this.getUserById(o1.UpdatedUserID))));
+      this.userServiceInstance.getUserName(this.userServiceInstance.getUserById(o2.UpdatedUserID)).localeCompare(
+        this.userServiceInstance.getUserName(this.userServiceInstance.getUserById(o1.UpdatedUserID))));
     this.resetSortOptions();
     this.isUsersAscPressed = false;
     this.isUsersDescPressed = true
@@ -443,39 +455,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   /**----------------------------------------*/
 
-  public getCountryById(countryId: number): Country {
-    return CountryService.getCountryById(countryId);
-  }
-
-  getCountryName(country: Country): string {
-    return CountryService.getCountryName(country);
-  }
-
-  public getWorkflowArray(): WorkflowStates[] {
-    return WorkflowService.getWorkflowArray();
-  }
-
-  public getWorkflowById(workflowId: number): WorkflowStates {
-    return WorkflowService.getWorkflowById(workflowId);
-  }
-
-  getWorkflowName(workflow: WorkflowStates): string {
-    return WorkflowService.getWorkflowName(workflow);
-  }
-
-  public getUserById(userId: number): User {
-    return UserService.getUserById(userId);
-  }
-
-  getUserName(user: User): string {
-    return UserService.getUserName(user);
-  }
-
   getDate(seconds: number): string {
     return new Date(seconds).toLocaleDateString();
-  }
-
-  constructor() {
   }
 
   ngOnInit(): void {

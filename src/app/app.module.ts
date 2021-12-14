@@ -6,6 +6,10 @@ import {SearchComponent} from './search/search.component';
 import {PortfolioComponent} from './portfolio/portfolio.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HoverDirective} from './hover.directive';
+import {CountryService} from "./service/CountryService";
+import {InterventionService} from "./service/InterventionService";
+import {UserService} from "./service/UserService";
+import {WorkflowService} from "./service/WorkflowService";
 
 @NgModule({
   declarations: [
@@ -19,7 +23,12 @@ import {HoverDirective} from './hover.directive';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    CountryService,
+    InterventionService,
+    UserService,
+    WorkflowService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

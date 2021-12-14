@@ -1,13 +1,15 @@
 import * as countries from "../files/Countries.json";
 import {Country} from "../models/Country";
+import {Injectable} from "@angular/core";
 
+@Injectable()
 export class CountryService {
-  public static getAllCountriesList() {
+  public getAllCountriesList() {
     return countries;
   }
 
-  public static getCountryArray() {
-    return CountryService.getAllCountriesList().data
+  public getCountries() {
+    return this.getAllCountriesList().data
       .map(currentCountry =>
         new Country(
           currentCountry.CountryId,
@@ -20,11 +22,11 @@ export class CountryService {
       );
   }
 
-  public static getCountryById(countryId: number): Country {
-    return this.getCountryArray().find(currentCountry => currentCountry.countryId === countryId);
+  public getCountryById(countryId: number): Country {
+    return this.getCountries().find(currentCountry => currentCountry.countryId === countryId);
   }
 
-  public static getCountryName(country: Country): string {
+  public getCountryName(country: Country): string {
     return country.name["3"];
   }
 }

@@ -1,15 +1,17 @@
 import * as interventions from "../files/response.json";
 import {Intervention} from "../models/Intervention";
 import {Country} from "../models/Country";
+import {Injectable} from "@angular/core";
 
+@Injectable()
 export class InterventionService {
 
-  public static getAllInterventionsList() {
+  public getAllInterventionsList() {
     return interventions;
   }
 
-  public static getInterventionArray() {
-    return InterventionService.getAllInterventionsList().data
+  public getInterventionArray() {
+    return this.getAllInterventionsList().data
       .map(currentIntervention =>
         new Intervention(
           currentIntervention.ActualEndDate,

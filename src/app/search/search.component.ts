@@ -10,6 +10,10 @@ import {FormControl, FormGroup} from "@angular/forms";
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent {
+
+  constructor(public countryServiceInstance: CountryService) {
+  }
+
   @Output()
   onSearch = new EventEmitter<FormGroup>();
   @Output()
@@ -48,12 +52,9 @@ export class SearchComponent {
     this.onReset.emit();
   }
 
-  public getCountries(): Country[] {
-    return CountryService.getCountryArray();
-  }
-
-  constructor() {
-  }
+  // public getCountries(): Country[] {
+  //   return this.countryServiceInstance.getCountryArray();
+  // }
 
   // ngOnInit(): void {
   //   this.sendSearchFields();

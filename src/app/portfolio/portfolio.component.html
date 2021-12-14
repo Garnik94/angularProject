@@ -6,7 +6,7 @@
         <!--          TODO: use id instead of name in value-->
         <!--          DONE:-->
         <option [value]="'0'" selected>All Statuses</option>
-        <option *ngFor="let currentWorkflow of getWorkflowArray()"
+        <option *ngFor="let currentWorkflow of workflowServiceInstance.getWorkflowArray()"
                 [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
       </select>
     </div>
@@ -57,9 +57,9 @@
       <td><a href="">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
       <td>{{currentIntervention.CommericalName}}</td>
-      <td>{{getCountryName(getCountryById(currentIntervention.InterventionCountryID))}}</td>
-      <td>{{getWorkflowName(getWorkflowById(currentIntervention.workflowStateId))}}</td>
-      <td>{{getUserName(getUserById(currentIntervention.UpdatedUserID))}}</td>
+      <td>{{countryServiceInstance.getCountryName(countryServiceInstance.getCountryById(currentIntervention.InterventionCountryID))}}</td>
+      <td>{{workflowServiceInstance.getWorkflowName(workflowServiceInstance.getWorkflowById(currentIntervention.workflowStateId))}}</td>
+      <td>{{userServiceInstance.getUserName(userServiceInstance.getUserById(currentIntervention.UpdatedUserID))}}</td>
       <td>{{getDate(currentIntervention.DateUpdated)}}</td>
     </tr>
     </thead>
