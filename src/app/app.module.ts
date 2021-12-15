@@ -5,18 +5,21 @@ import {AppComponent} from './app.component';
 import {SearchComponent} from './search/search.component';
 import {PortfolioComponent} from './portfolio/portfolio.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HoverDirective} from './hover.directive';
+import {HoverDirective} from './directives/hover.directive';
 import {CountryService} from "./service/CountryService";
 import {InterventionService} from "./service/InterventionService";
 import {UserService} from "./service/UserService";
 import {WorkflowService} from "./service/WorkflowService";
+import { GetNamePipe } from './pipes/get-name.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
     PortfolioComponent,
-    HoverDirective
+    HoverDirective,
+    GetNamePipe,
+    GetNamePipe,
   ],
   imports: [
     BrowserModule,

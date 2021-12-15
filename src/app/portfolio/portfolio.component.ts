@@ -455,8 +455,10 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   /**----------------------------------------*/
 
-  getDate(seconds: number): string {
-    return new Date(seconds).toLocaleDateString();
+  getDate(seconds: number): Date {
+    console.log("1");
+    return new Date(seconds);
+    // return new Date(seconds).toLocaleDateString();
   }
 
   ngOnInit(): void {

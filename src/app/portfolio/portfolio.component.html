@@ -57,10 +57,10 @@
       <td><a href="">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
       <td>{{currentIntervention.CommericalName}}</td>
-      <td>{{countryServiceInstance.getCountryName(countryServiceInstance.getCountryById(currentIntervention.InterventionCountryID))}}</td>
-      <td>{{workflowServiceInstance.getWorkflowName(workflowServiceInstance.getWorkflowById(currentIntervention.workflowStateId))}}</td>
-      <td>{{userServiceInstance.getUserName(userServiceInstance.getUserById(currentIntervention.UpdatedUserID))}}</td>
-      <td>{{getDate(currentIntervention.DateUpdated)}}</td>
+      <td>{{currentIntervention.InterventionCountryID | getName: "Country"}}</td>
+      <td>{{currentIntervention.workflowStateId | getName : "Workflow"}}</td>
+      <td>{{currentIntervention.UpdatedUserID | getName : "User"}}</td>
+      <td>{{currentIntervention.DateUpdated | date : "dd/MM/yyy"}}</td>
     </tr>
     </thead>
   </table>
