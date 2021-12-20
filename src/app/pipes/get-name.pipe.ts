@@ -11,7 +11,8 @@ export class GetNamePipe implements PipeTransform {
   constructor(
     private countryService: CountryService,
     private workflowService: WorkflowService,
-    private userService: UserService) {
+    private userService: UserService
+  ) {
   }
 
   transform(value: any, service: string): any {

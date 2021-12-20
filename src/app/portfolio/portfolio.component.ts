@@ -10,6 +10,7 @@ import {InterventionService} from "../service/InterventionService";
 import {WorkflowService} from "../service/WorkflowService";
 import {UserService} from "../service/UserService";
 import {FormGroup} from "@angular/forms";
+import {zip} from "rxjs";
 
 @Component({
   selector: 'portfolio',
@@ -31,20 +32,18 @@ export class PortfolioComponent implements OnInit, OnChanges {
   searchOptions: FormGroup;
 
   ngOnInit(): void {
-    this.userService.getUsers()
-      .subscribe((users: any) => {
-        this.userService.users = users;
-      });
-    this.workflowService.getWorkflowStates()
-      .subscribe((workflowStates: any) => {
-        this.workflowService.workflowStates = workflowStates;
-      });
-    this.interventionService.getInterventions()
-      .subscribe((interventions: any) => {
-        this.interventionService.allInterventions = interventions;
-        this.interventionService.filteredInterventions = interventions;
-        this.tempInterventionsBeforeSearch = this.interventionService.allInterventions;
-      });
+    zip(
+      this.userService.getUsers(),
+      this.workflowService.getWorkflowStates(),
+      this.interventionService.getInterventions())
+      .subscribe(allResponses => {
+          this.userService.users = allResponses[0];
+          this.workflowService.workflowStates = allResponses[1];
+          this.interventionService.allInterventions = allResponses[2];
+          this.interventionService.filteredInterventions = allResponses[2];
+          this.tempInterventionsBeforeSearch = this.interventionService.allInterventions;
+        }
+      )
   }
 
   ngOnChanges(changes: SimpleChanges): void {

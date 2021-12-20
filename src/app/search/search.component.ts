@@ -7,7 +7,7 @@ import {FormControl, FormGroup} from "@angular/forms";
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements OnInit{
+export class SearchComponent implements OnInit {
 
   @Output()
   onSearch = new EventEmitter<FormGroup>();
@@ -21,7 +21,9 @@ export class SearchComponent implements OnInit{
 
   ngOnInit(): void {
     this.countryService.getCountries()
-    .subscribe((countries: any) => {this.countryService.countries = countries});
+      .subscribe((countries: any) => {
+        this.countryService.countries = countries
+      });
   }
 
   searchFields: FormGroup = new FormGroup({
@@ -54,5 +56,4 @@ export class SearchComponent implements OnInit{
     )
     this.onReset.emit();
   }
-
 }

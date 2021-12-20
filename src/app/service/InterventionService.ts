@@ -36,7 +36,8 @@ export class InterventionService {
     return this.http.get("/assets/data/response.json")
       .pipe(
         map((data: any) => {
-          console.log(data);
+          let responses = data["data"] as Array<Intervention>;
+          console.log(responses[0]);
           return data.data.map((currentIntervention: any) =>
             new Intervention(
               (currentIntervention as InterventionInterface).ActualEndDate,
