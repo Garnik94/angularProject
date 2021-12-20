@@ -32,7 +32,7 @@ export class WorkflowService {
     return this.workflowStates.find(currentWorkflow => currentWorkflow.WFSTATEID === workflowId);
   }
 
-  public getWorkflowName(workflow: WorkflowStates): string {
-    return workflow.name["3"];
+  public getWorkflowName(workflowId: number): string {
+    return this.getWorkflowById(workflowId).name["3"];
   }
 }

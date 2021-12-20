@@ -1,4 +1,3 @@
-<button (click)="logInterventions()">Log interventions</button>
 <div>
   <div [ngClass]="'flex'">
     <div [ngClass]="'statusStyle'">
@@ -21,16 +20,16 @@
     <thead>
     <tr>
       <th>Code of the Intervention<br><br>
-        <button (click)="interventionService.sortInterventionList('Code', true)">↑</button>
-        <button (click)="interventionService.sortInterventionList('Code', false)">↓</button>
+        <button (click)="interventionService.sortInterventionList('InterventionCode', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('InterventionCode', false)">↓</button>
       </th>
       <th>Short Name<br><br>
         <button (click)="interventionService.sortInterventionList('ShortName', true)">↑</button>
         <button (click)="interventionService.sortInterventionList('ShortName', false)">↓</button>
       </th>
       <th>Official Intervention Name<br><br>
-        <button (click)="interventionService.sortInterventionList('OfficialName', true)">↑</button>
-        <button (click)="interventionService.sortInterventionList('OfficialName', false)">↓
+        <button (click)="interventionService.sortInterventionList('CommericalName', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('CommericalName', false)">↓
         </button>
       </th>
       <th>Country<br><br>

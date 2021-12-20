@@ -16,11 +16,11 @@ export class GetNamePipe implements PipeTransform {
 
   transform(value: any, service: string): any {
     if (service === "Country") {
-      return this.countryService.getCountryName(this.countryService.getCountryById(value));
+      return this.countryService.getCountryName(value);
     } else if (service === "Workflow"){
-      return this.workflowService.getWorkflowName(this.workflowService.getWorkflowById(value));
+      return this.workflowService.getWorkflowName(value);
     } else if (service === "User"){
-      return this.userService.getUserName(this.userService.getUserById(value));
+      return this.userService.getUserName(value);
     }
   }
 

@@ -33,7 +33,7 @@ export class UserService {
     return this.users.find(currentUser => currentUser.UserID === userId);
   }
 
-  public getUserName(user: User): string {
-    return user.name["3"];
+  public getUserName(userId: number): string {
+    return this.getUserById(userId).name["3"];
   }
 }

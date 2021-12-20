@@ -37,7 +37,7 @@ export class CountryService {
     });
   }
 
-  public getCountryName(country: Country): string {
-    return country.name["3"];
+  public getCountryName(countryId: number): string {
+    return this.getCountryById(countryId).name["3"];
   }
 }

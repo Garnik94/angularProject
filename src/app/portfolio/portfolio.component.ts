@@ -1,11 +1,10 @@
 import {
-  Component, Injector,
+  Component,
   Input,
   OnChanges,
   OnInit,
   SimpleChanges
 } from '@angular/core';
-import {CountryService} from "../service/CountryService";
 import {Intervention} from "../models/Intervention";
 import {InterventionService} from "../service/InterventionService";
 import {WorkflowService} from "../service/WorkflowService";
@@ -22,15 +21,10 @@ export class PortfolioComponent implements OnInit, OnChanges {
   tempInterventionsBeforeSearch: Intervention[];
 
   constructor(
-    public countryService: CountryService,
     public interventionService: InterventionService,
     public userService: UserService,
     public workflowService: WorkflowService,
   ) {
-  }
-
-  logInterventions() {
-    console.log(this.interventionService.filteredInterventions)
   }
 
   @Input()
@@ -40,10 +34,6 @@ export class PortfolioComponent implements OnInit, OnChanges {
     this.userService.getUsers()
       .subscribe((users: any) => {
         this.userService.users = users;
-      });
-    this.countryService.getCountries()
-      .subscribe((countries: any) => {
-        this.countryService.countries = countries;
       });
     this.workflowService.getWorkflowStates()
       .subscribe((workflowStates: any) => {

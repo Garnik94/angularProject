@@ -36,6 +36,7 @@ export class InterventionService {
     return this.http.get("/assets/data/response.json")
       .pipe(
         map((data: any) => {
+          console.log(data);
           return data.data.map((currentIntervention: any) =>
             new Intervention(
               (currentIntervention as InterventionInterface).ActualEndDate,
@@ -158,14 +159,14 @@ export class InterventionService {
 
   public sortInterventionList(fieldName: string, isAsc: boolean) {
     switch (fieldName) {
-      case "Code":
-        this.sortByCode(isAsc);
+      case "InterventionCode":
+        this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
         break;
       case "ShortName":
-        this.sortByShortName(isAsc);
+        this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
         break;
-      case "OfficialName":
-        this.sortByOfficialName(isAsc);
+      case "CommericalName":
+        this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
         break;
       case "Country":
         this.sortByCountry(isAsc);
@@ -182,69 +183,49 @@ export class InterventionService {
     }
   }
 
-  sortByCode(isAsc: boolean): void {
+  sortByCode_ShortName_CommericalName(isAsc: boolean, propertyName: string): void {
     if (isAsc) {
       this.filteredInterventions.sort((o1, o2) =>
-        o1.InterventionCode.localeCompare(o2.InterventionCode));
+        (o1 as any)[propertyName].localeCompare((o2 as any)[propertyName]));
     } else {
       this.filteredInterventions.sort((o1, o2) =>
-        o2.InterventionCode.localeCompare(o1.InterventionCode));
-    }
-  }
-
-  sortByShortName(isAsc: boolean): void {
-    if (isAsc) {
-      this.filteredInterventions.sort((o1, o2) =>
-        o1.ShortName.localeCompare(o2.ShortName));
-    } else {
-      this.filteredInterventions.sort((o1, o2) =>
-        o2.ShortName.localeCompare(o1.ShortName))
-    }
-  }
-
-  sortByOfficialName(isAsc: boolean): void {
-    if (isAsc) {
-      this.filteredInterventions.sort((o1, o2) =>
-        o1.CommericalName.localeCompare(o2.CommericalName));
-    } else {
-      this.filteredInterventions.sort((o1, o2) =>
-        o2.CommericalName.localeCompare(o1.CommericalName));
+        (o2 as any)[propertyName].localeCompare((o1 as any)[propertyName]));
     }
   }
 
   sortByCountry(isAsc: boolean): void {
     if (isAsc) {
       this.filteredInterventions.sort((o1, o2) =>
-        this.countryService.getCountryName(this.countryService.getCountryById(o1.InterventionCountryID))
-          .localeCompare(this.countryService.getCountryName(this.countryService.getCountryById(o2.InterventionCountryID))))
+        this.countryService.getCountryName(o1.InterventionCountryID)
+          .localeCompare(this.countryService.getCountryName(o2.InterventionCountryID)))
     } else {
       this.filteredInterventions.sort((o1, o2) =>
-        this.countryService.getCountryName(this.countryService.getCountryById(o2.InterventionCountryID))
-          .localeCompare(this.countryService.getCountryName(this.countryService.getCountryById(o1.InterventionCountryID))))
+        this.countryService.getCountryName(o2.InterventionCountryID)
+          .localeCompare(this.countryService.getCountryName(o1.InterventionCountryID)))
     }
   }
 
   sortByStatus(isAsc: boolean): void {
     if (isAsc) {
       this.filteredInterventions.sort((o1, o2) =>
-        this.workflowService.getWorkflowName(this.workflowService.getWorkflowById(o1.workflowStateId)).localeCompare(
-          this.workflowService.getWorkflowName(this.workflowService.getWorkflowById(o2.workflowStateId))));
+        this.workflowService.getWorkflowName(o1.workflowStateId).localeCompare(
+          this.workflowService.getWorkflowName(o2.workflowStateId)));
     } else {
       this.filteredInterventions.sort((o1, o2) =>
-        this.workflowService.getWorkflowName(this.workflowService.getWorkflowById(o2.workflowStateId)).localeCompare(
-          this.workflowService.getWorkflowName(this.workflowService.getWorkflowById(o1.workflowStateId))));
+        this.workflowService.getWorkflowName(o2.workflowStateId)
+          .localeCompare(this.workflowService.getWorkflowName(o1.workflowStateId)));
     }
   }
 
   sortByUsers(isAsc: boolean): void {
     if (isAsc) {
       this.filteredInterventions.sort((o1, o2) =>
-        this.userService.getUserName(this.userService.getUserById(o1.UpdatedUserID)).localeCompare(
-          this.userService.getUserName(this.userService.getUserById(o2.UpdatedUserID))));
+        this.userService.getUserName(o1.UpdatedUserID)
+          .localeCompare(this.userService.getUserName(o2.UpdatedUserID)));
     } else {
       this.filteredInterventions.sort((o1, o2) =>
-        this.userService.getUserName(this.userService.getUserById(o2.UpdatedUserID)).localeCompare(
-          this.userService.getUserName(this.userService.getUserById(o1.UpdatedUserID))));
+        this.userService.getUserName(o2.UpdatedUserID)
+          .localeCompare(this.userService.getUserName(o1.UpdatedUserID)));
     }
   }
 
@@ -277,6 +258,5 @@ export class InterventionService {
   //       })
   //     )
   // }
-
 
 }
