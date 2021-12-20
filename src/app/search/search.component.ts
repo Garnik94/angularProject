@@ -1,25 +1,28 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Country} from "../models/Country";
 import {CountryService} from "../service/CountryService";
-
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent {
-
-  constructor(public countryServiceInstance: CountryService) {
-  }
+export class SearchComponent implements OnInit{
 
   @Output()
   onSearch = new EventEmitter<FormGroup>();
   @Output()
   onReset = new EventEmitter<void>();
-
   title: string = "Search";
+
+  constructor(
+    public countryService: CountryService) {
+  }
+
+  ngOnInit(): void {
+    // this.countryService.getCountries()
+    // .subscribe((countries: any) => {this.countryService.countries = countries});
+  }
 
   searchFields: FormGroup = new FormGroup({
       countryOption: new FormControl(0),
@@ -51,13 +54,5 @@ export class SearchComponent {
     )
     this.onReset.emit();
   }
-
-  // public getCountries(): Country[] {
-  //   return this.countryServiceInstance.getCountryArray();
-  // }
-
-  // ngOnInit(): void {
-  //   this.sendSearchFields();
-  // }
 
 }

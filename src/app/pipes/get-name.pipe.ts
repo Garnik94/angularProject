@@ -9,18 +9,18 @@ import {WorkflowService} from "../service/WorkflowService";
 export class GetNamePipe implements PipeTransform {
 
   constructor(
-    private countryServiceInstance: CountryService,
-    private workflowServiceInstance: WorkflowService,
-    private userServiceInstance: UserService) {
+    private countryService: CountryService,
+    private workflowService: WorkflowService,
+    private userService: UserService) {
   }
 
   transform(value: any, service: string): any {
     if (service === "Country") {
-      return this.countryServiceInstance.getCountryName(this.countryServiceInstance.getCountryById(value));
+      return this.countryService.getCountryName(this.countryService.getCountryById(value));
     } else if (service === "Workflow"){
-      return this.workflowServiceInstance.getWorkflowName(this.workflowServiceInstance.getWorkflowById(value));
+      return this.workflowService.getWorkflowName(this.workflowService.getWorkflowById(value));
     } else if (service === "User"){
-      return this.userServiceInstance.getUserName(this.userServiceInstance.getUserById(value));
+      return this.userService.getUserName(this.userService.getUserById(value));
     }
   }
 

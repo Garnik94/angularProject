@@ -16,7 +16,7 @@
           <option [value]="'Select One'">--Select One--</option>
           <!--          TODO: use id instead of name in value-->
           <!--          DONE-->
-          <option *ngFor="let currentCountry of countryServiceInstance.getCountries()"
+          <option *ngFor="let currentCountry of countryService.countries"
                   [value]="currentCountry.countryId">{{currentCountry.name["3"]}}</option>
         </select>
       </div>

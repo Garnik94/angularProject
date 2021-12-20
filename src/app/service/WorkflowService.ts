@@ -1,25 +1,35 @@
-import * as workflows from "../files/WorkflowStates.json";
 import {WorkflowStates} from "../models/WorkflowState";
 import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {WorkflowStateInterface} from "../interfaces/WorkflowStateInterface";
+import {map} from "rxjs/operators";
+import {User} from "../models/User";
+import {UserInterface} from "../interfaces/UserInterface";
 
-Injectable()
+@Injectable()
 export class WorkflowService {
 
-  public getAllWorkflowList() {
-    return workflows;
+  workflowStates: WorkflowStates[] = [];
+
+  constructor(private http: HttpClient) {
   }
 
-  public getWorkflowArray() {
-    return this.getAllWorkflowList().data
-      .map(currentWorkflow =>
-        new WorkflowStates(
-          currentWorkflow.WFSTATEID,
-          currentWorkflow.name)
-      );
+  public getWorkflowStates() {
+    return this.http.get("/assets/data/WorkflowStates.json")
+      .pipe(
+        map((data: any) => {
+          return data.data.map((currentWorkflow: any) =>
+            new WorkflowStates(
+              (currentWorkflow as WorkflowStateInterface).WFSTATEID,
+              (currentWorkflow as WorkflowStateInterface).name
+
+          ));
+        })
+      )
   }
 
   public getWorkflowById(workflowId: number): WorkflowStates {
-    return this.getWorkflowArray().find(currentWorkflow => currentWorkflow.WFSTATEID === workflowId);
+    return this.workflowStates.find(currentWorkflow => currentWorkflow.WFSTATEID === workflowId);
   }
 
   public getWorkflowName(workflow: WorkflowStates): string {

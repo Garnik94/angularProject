@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-
 import {AppComponent} from './app.component';
 import {SearchComponent} from './search/search.component';
 import {PortfolioComponent} from './portfolio/portfolio.component';
@@ -10,7 +9,8 @@ import {CountryService} from "./service/CountryService";
 import {InterventionService} from "./service/InterventionService";
 import {UserService} from "./service/UserService";
 import {WorkflowService} from "./service/WorkflowService";
-import { GetNamePipe } from './pipes/get-name.pipe';
+import {GetNamePipe} from './pipes/get-name.pipe';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -24,13 +24,15 @@ import { GetNamePipe } from './pipes/get-name.pipe';
   imports: [
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
     CountryService,
     InterventionService,
     UserService,
     WorkflowService,
+    PortfolioComponent
   ],
   bootstrap: [AppComponent]
 })

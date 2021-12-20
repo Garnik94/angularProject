@@ -1,12 +1,13 @@
+<button (click)="logInterventions()">Log interventions</button>
 <div>
   <div [ngClass]="'flex'">
     <div [ngClass]="'statusStyle'">
       Status
-      <select [(ngModel)]="selectStatus" (change)="onStatusChange()">
+      <select [(ngModel)]="interventionService.selectStatus" (change)="interventionService.onStatusChange()">
         <!--          TODO: use id instead of name in value-->
         <!--          DONE:-->
         <option [value]="'0'" selected>All Statuses</option>
-        <option *ngFor="let currentWorkflow of workflowServiceInstance.getWorkflowArray()"
+        <option *ngFor="let currentWorkflow of workflowService.workflowStates"
                 [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
       </select>
     </div>
@@ -20,40 +21,37 @@
     <thead>
     <tr>
       <th>Code of the Intervention<br><br>
-        <button (click)="sortByCodeInterventionASC()" [ngStyle]="{background: isCodeAscPressed ? 'red':''}">↑</button>
-        <button (click)="sortByCodeInterventionDESC()" [ngStyle]="{background: isCodeDescPressed ? 'red':''}">↓</button>
+        <button (click)="interventionService.sortInterventionList('Code', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('Code', false)">↓</button>
       </th>
       <th>Short Name<br><br>
-        <button (click)="sortByShortNameASC()" [ngStyle]="{background: isShortNameAscPressed ? 'red':''}">↑</button>
-        <button (click)="sortByShortNameDESC()" [ngStyle]="{background: isShortNameDescPressed ? 'red':''}">↓</button>
+        <button (click)="interventionService.sortInterventionList('ShortName', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('ShortName', false)">↓</button>
       </th>
       <th>Official Intervention Name<br><br>
-        <button (click)="sortByOfficialInterventionNameASC()"
-                [ngStyle]="{background: isOfficialNameAscPressed ? 'red':''}">↑
-        </button>
-        <button (click)="sortByOfficialInterventionNameDESC()"
-                [ngStyle]="{background: isOfficialNameDescPressed ? 'red':''}">↓
+        <button (click)="interventionService.sortInterventionList('OfficialName', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('OfficialName', false)">↓
         </button>
       </th>
       <th>Country<br><br>
-        <button (click)="sortByCountryASC()" [ngStyle]="{background: isCountryAscPressed ? 'red':''}">↑</button>
-        <button (click)="sortByCountryDESC()" [ngStyle]="{background: isCountryDescPressed ? 'red':''}">↓</button>
+        <button (click)="interventionService.sortInterventionList('Country', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('Country', false)">↓</button>
       </th>
       <th>Status<br><br>
-        <button (click)="sortByStatusASC()" [ngStyle]="{background: isStatusAscPressed ? 'red':''}">↑</button>
-        <button (click)="sortByStatusDESC()" [ngStyle]="{background: isStatusDescPressed ? 'red':''}">↓</button>
+        <button (click)="interventionService.sortInterventionList('Status', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('Status', false)">↓</button>
       </th>
       <th>Last Updated By<br><br>
-        <button (click)="sortByUsersASC()" [ngStyle]="{background: isUsersAscPressed ? 'red':''}">↑</button>
-        <button (click)="sortByUsersDESC()" [ngStyle]="{background: isUsersDescPressed ? 'red':''}">↓</button>
+        <button (click)="interventionService.sortInterventionList('User', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('User', false)">↓</button>
       </th>
       <th>Last Updated On<br><br>
-        <button (click)="sortByDateASC()" [ngStyle]="{background: isDateAscPressed ? 'red':''}">↑</button>
-        <button (click)="sortByDateDESC()" [ngStyle]="{background: isDateDescPressed ? 'red':''}">↓</button>
+        <button (click)="interventionService.sortInterventionList('UpdateOn', true)">↑</button>
+        <button (click)="interventionService.sortInterventionList('UpdateOn', false)">↓</button>
       </th>
     </tr>
 
-    <tr hover *ngFor="let currentIntervention of interventionList">
+    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions">
       <td><a href="">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
       <td>{{currentIntervention.CommericalName}}</td>

@@ -1,27 +1,36 @@
-import * as users from "../files/Users.json";
 import {User} from "../models/User";
 import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {UserInterface} from "../interfaces/UserInterface";
+import {map} from "rxjs/operators";
+import {Country} from "../models/Country";
+import {CountryInterface} from "../interfaces/CountryInterface";
 
 @Injectable()
 export class UserService {
 
-  public getAllUsersList() {
-    return users;
+  users: User[] = [];
+
+  constructor(private http: HttpClient) {
   }
 
-  public getUserArray() {
-    return this.getAllUsersList().data
-      .map(currentUser =>
-        new User(
-          currentUser.Email,
-          currentUser.UserID,
-          currentUser.name,
-          currentUser.StatusID)
-      );
+  public getUsers() {
+    return this.http.get("/assets/data/Users.json")
+      .pipe(
+        map((data: any) => {
+          return data.data.map((currentUser: any) =>
+            new User(
+              (currentUser as UserInterface).Email,
+              (currentUser as UserInterface).UserID,
+              (currentUser as UserInterface).name,
+              (currentUser as UserInterface).StatusID)
+          );
+        })
+      )
   }
 
   public getUserById(userId: number): User {
-    return this.getUserArray().find(currentUser => currentUser.UserID === userId);
+    return this.users.find(currentUser => currentUser.UserID === userId);
   }
 
   public getUserName(user: User): string {

@@ -1,29 +1,40 @@
-import * as countries from "../files/Countries.json";
 import {Country} from "../models/Country";
 import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {CountryInterface} from "../interfaces/CountryInterface";
+import {map} from "rxjs/operators";
 
 @Injectable()
 export class CountryService {
-  public getAllCountriesList() {
-    return countries;
+
+  countries: Country[] = [];
+
+  constructor(private http: HttpClient) {
   }
 
   public getCountries() {
-    return this.getAllCountriesList().data
-      .map(currentCountry =>
-        new Country(
-          currentCountry.CountryId,
-          currentCountry.DeletedBy,
-          currentCountry.ISOcode,
-          currentCountry["name"],
-          currentCountry.DeletedOn,
-          currentCountry.Level,
-          currentCountry.HasSpecificZone)
-      );
+    return this.http.get("/assets/data/Countries.json")
+      .pipe(
+        map((data: any) => {
+          return data.data.map((currentCountry: any) =>
+            new Country(
+              (currentCountry as CountryInterface).CountryId,
+              (currentCountry as CountryInterface).DeletedBy,
+              (currentCountry as CountryInterface).ISOcode,
+              (currentCountry as CountryInterface).name,
+              (currentCountry as CountryInterface).DeletedOn,
+              (currentCountry as CountryInterface).Level,
+              (currentCountry as CountryInterface).HasSpecificZone)
+          );
+        })
+      )
   }
 
   public getCountryById(countryId: number): Country {
-    return this.getCountries().find(currentCountry => currentCountry.countryId === countryId);
+    return this.countries.find(currentCountry => {
+      return currentCountry.countryId === countryId
+    });
   }
 
   public getCountryName(country: Country): string {
