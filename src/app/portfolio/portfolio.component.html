@@ -1,3 +1,76 @@
+<!--<button (click)="interventionService.logForm()">Log form</button>-->
+<!--<button (click)="interventionService.logNewIntervention()">Log new intervention</button>-->
+<div *ngIf="isCreateButtonPressed">
+  <div [ngClass]="'flex'">
+    <form [formGroup]="interventionService.newInterventionForm">
+      Code of the Intervention<br>
+      <input type="text" formControlName="InterventionCode">
+      <div *ngIf="interventionService.newInterventionForm.get('InterventionCode').hasError('required') &&
+      interventionService.newInterventionForm.get('InterventionCode').touched"
+           style="color: red">
+        Intervention Code is required field
+      </div>
+      <br><br>
+      Short Name<br>
+      <input type="text" formControlName="ShortName">
+      <div *ngIf="interventionService.newInterventionForm.get('ShortName').hasError('required') &&
+      interventionService.newInterventionForm.get('ShortName').touched"
+           style="color: red">
+        Short Name is required field
+      </div>
+      <br><br>
+      Official Intervention Name<br>
+      <input type="text" formControlName="CommericalName">
+      <div *ngIf="interventionService.newInterventionForm.get('CommericalName').hasError('required') &&
+      interventionService.newInterventionForm.get('CommericalName').touched"
+           style="color: red">
+        Official Intervention Name is required field
+      </div>
+      <br><br>
+      Country<br>
+      <select formControlName="Country">
+        <option *ngFor="let currentCountry of countryService.countries"
+                [value]="currentCountry.countryId">{{currentCountry.name["3"]}}</option>
+      </select>
+      <div *ngIf="interventionService.newInterventionForm.get('Country').hasError('required') &&
+      interventionService.newInterventionForm.get('Country').touched"
+           style="color: red">
+        Country is required field
+      </div><br><br>
+      Status<br>
+      <select formControlName="Status">
+        <option *ngFor="let currentWorkflow of workflowService.workflowStates"
+                [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
+      </select>
+      <div *ngIf="interventionService.newInterventionForm.get('Status').hasError('required') &&
+      interventionService.newInterventionForm.get('Status').touched"
+           style="color: red">
+        Status is required field
+      </div><br><br>
+      Last Updated By<br>
+      <select formControlName="User">
+        <option *ngFor="let currentUser of userService.users"
+                [value]="currentUser.UserID">{{currentUser.name["3"]}}</option>
+      </select>
+      <div *ngIf="interventionService.newInterventionForm.get('User').hasError('required') &&
+      interventionService.newInterventionForm.get('User').touched"
+           style="color: red">
+        Last Updated user is required field
+      </div><br><br>
+      Last Updated On<br>
+      <input type="date" formControlName="LastUpdatedOn">
+      <div *ngIf="interventionService.newInterventionForm.get('LastUpdatedOn').hasError('required') &&
+      interventionService.newInterventionForm.get('LastUpdatedOn').touched"
+           style="color: red">
+        Last Updated On is required field
+      </div>
+    </form>
+  </div>
+  <button (click)="isCreateButtonPressed = false">Submit</button>
+  <button (click)="isCreateButtonPressed = false">Cancel</button>
+</div>
+
+
 <div>
   <div [ngClass]="'flex'">
     <div [ngClass]="'statusStyle'">
@@ -12,7 +85,7 @@
     </div>
 
     <div>
-      <button [ngClass]="'searchButtonStyle'">Create New Intervention</button>
+      <button [ngClass]="'searchButtonStyle'" (click)="isCreateButtonPressed = true">Create New Intervention</button>
     </div>
   </div>
 
@@ -63,5 +136,17 @@
   </table>
 
 </div>
+
+<p>Pagination</p>
+<div [ngClass]="'flex'">
+  <select [(ngModel)]="countOfVisibleData" (change)="sliceFilteredData()">
+    <option [value]="interventionService.filteredInterventions.length">Shaw all</option>
+    <option [value]="5">5</option>
+    <option [value]="3">3</option>
+    <option [value]="2">2</option>
+  </select>
+</div>
+
+<button *ngFor="let page of countOfPages; let i = index" (click)="getCurrentPage(i)">{{i + 1}}</button>
 
 

@@ -7,7 +7,7 @@ import {map} from "rxjs/operators";
 import {CountryService} from "./CountryService";
 import {UserService} from "./UserService";
 import {WorkflowService} from "./WorkflowService";
-import {FormGroup} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Injectable()
 export class InterventionService {
@@ -67,6 +67,7 @@ export class InterventionService {
   onStatusChange(): void {
     if (!this.isSearchMode) {
       this.tempInterventionsBeforeStatusChange = Array.from(this.filteredInterventions);
+      console.log(this.tempInterventionsBeforeStatusChange === this.filteredInterventions);
     }
     if (Number(this.selectStatus) === 0) {
       this.filteredInterventions = this.tempInterventionsBeforeStatusChange;
@@ -238,6 +239,52 @@ export class InterventionService {
       this.filteredInterventions.sort((o1, o2) =>
         o2.DateUpdated - o1.DateUpdated);
     }
+  }
+
+  /**-------------------------------------------------------------------------*/
+
+  newInterventionForm: FormGroup = new FormGroup({
+      InterventionCode: new FormControl("", Validators.required),
+      ShortName: new FormControl("", Validators.required),
+      CommericalName: new FormControl("", Validators.required),
+      Country: new FormControl(0, Validators.required),
+      Status: new FormControl(0, Validators.required),
+      User: new FormControl(0, Validators.required),
+      LastUpdatedOn: new FormControl(new Date(), Validators.required),
+    }
+  )
+
+  createNewIntervention() {
+    return new Intervention(
+      null,
+      this.newInterventionForm.value["InterventionCode"],
+      null,
+      null,
+      null,
+      this.newInterventionForm.value["LastUpdatedOn"],
+      null,
+      this.newInterventionForm.value["ShortName"],
+      null,
+      null,
+      null,
+      this.newInterventionForm.value["Status"],
+      this.newInterventionForm.value["Country"],
+      null,
+      null,
+      null,
+      this.newInterventionForm.value["CommericalName"],
+      this.newInterventionForm.value["User"],
+      null
+    )
+  }
+
+  logForm() {
+    console.log(this.newInterventionForm);
+  }
+
+  logNewIntervention(){
+    console.log(this.createNewIntervention());
+    console.log(JSON.stringify(this.createNewIntervention()));
   }
 
   // public getInterventions(sortingOption: { fieldName: string, isAsc: boolean }) {
