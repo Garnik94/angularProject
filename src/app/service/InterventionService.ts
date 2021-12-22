@@ -1,6 +1,6 @@
 import {Intervention} from "../models/Intervention";
 import {Country} from "../models/Country";
-import {Injectable, Injector} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {InterventionInterface} from "../interfaces/InterventionInterface";
 import {map} from "rxjs/operators";
@@ -8,6 +8,7 @@ import {CountryService} from "./CountryService";
 import {UserService} from "./UserService";
 import {WorkflowService} from "./WorkflowService";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class InterventionService {
@@ -20,7 +21,8 @@ export class InterventionService {
 
   searchOptions: FormGroup;
 
-  selectStatus: number = 0;
+  // selectStatus: number = 0;
+  selectStatus: FormControl = new FormControl(0);
 
   isSearchMode = false;
 
@@ -28,7 +30,7 @@ export class InterventionService {
     private http: HttpClient,
     public countryService: CountryService,
     public userService: UserService,
-    public workflowService: WorkflowService,
+    public workflowService: WorkflowService
   ) {
   }
 
@@ -69,13 +71,13 @@ export class InterventionService {
       this.tempInterventionsBeforeStatusChange = Array.from(this.filteredInterventions);
       console.log(this.tempInterventionsBeforeStatusChange === this.filteredInterventions);
     }
-    if (Number(this.selectStatus) === 0) {
+    if (Number(this.selectStatus.value) === 0) {
       this.filteredInterventions = this.tempInterventionsBeforeStatusChange;
       this.isSearchMode = false;
       return;
     } else {
       this.filteredInterventions = this.tempInterventionsBeforeStatusChange.filter(currentIntervention => {
-        return currentIntervention.workflowStateId === Number(this.selectStatus);
+        return currentIntervention.workflowStateId === Number(this.selectStatus.value);
       });
       this.isSearchMode = true;
     }
@@ -267,13 +269,13 @@ export class InterventionService {
       null,
       null,
       null,
-      this.newInterventionForm.value["Status"],
-      this.newInterventionForm.value["Country"],
+      Number(this.newInterventionForm.value["Status"]),
+      Number(this.newInterventionForm.value["Country"]),
       null,
       null,
       null,
       this.newInterventionForm.value["CommericalName"],
-      this.newInterventionForm.value["User"],
+      Number(this.newInterventionForm.value["User"]),
       null
     )
   }
@@ -282,9 +284,34 @@ export class InterventionService {
     console.log(this.newInterventionForm);
   }
 
-  logNewIntervention(){
+  toJson(intervention: Intervention) {
+    return JSON.stringify({
+        ActualEndDate: intervention.ActualEndDate,
+        InterventionCode: intervention.InterventionCode,
+        Description: intervention.Description,
+        InterventionProgrammeInstanceID: intervention.InterventionProgrammeInstanceID,
+        InterventionID: intervention.InterventionID,
+        DateUpdated: intervention.DateUpdated,
+        Title: intervention.Title,
+        ShortName: intervention.ShortName,
+        ActualStartDate: intervention.ActualStartDate,
+        interventionPartnerInstitutions: intervention.interventionPartnerInstitutions,
+        lastActionComment: intervention.lastActionComment,
+        workflowStateId: intervention.workflowStateId,
+        InterventionCountryID: intervention.InterventionCountryID,
+        ExternalReferenceNumber: intervention.ExternalReferenceNumber,
+        InterventionInstanceId: intervention.InterventionInstanceId,
+        SAEndDate: intervention.SAEndDate,
+        CommericalName: intervention.CommericalName,
+        UpdatedUserID: intervention.UpdatedUserID,
+        MasterID: intervention.MasterID
+      }
+    )
+  }
+
+  logNewIntervention() {
     console.log(this.createNewIntervention());
-    console.log(JSON.stringify(this.createNewIntervention()));
+    console.log(this.toJson(this.createNewIntervention()));
   }
 
   // public getInterventions(sortingOption: { fieldName: string, isAsc: boolean }) {

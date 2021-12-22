@@ -28,6 +28,10 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   isCreateButtonPressed: boolean = false;
 
+  clickRow(intervention: Intervention){
+    console.log("click")
+  }
+
   constructor(
     public interventionService: InterventionService,
     public countryService: CountryService,

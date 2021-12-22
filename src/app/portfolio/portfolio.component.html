@@ -1,5 +1,3 @@
-<!--<button (click)="interventionService.logForm()">Log form</button>-->
-<!--<button (click)="interventionService.logNewIntervention()">Log new intervention</button>-->
 <div *ngIf="isCreateButtonPressed">
   <div [ngClass]="'flex'">
     <form [formGroup]="interventionService.newInterventionForm">
@@ -66,7 +64,7 @@
       </div>
     </form>
   </div>
-  <button (click)="isCreateButtonPressed = false">Submit</button>
+  <button (click)="interventionService.logNewIntervention(); isCreateButtonPressed = false">Submit</button>
   <button (click)="isCreateButtonPressed = false">Cancel</button>
 </div>
 
@@ -75,7 +73,7 @@
   <div [ngClass]="'flex'">
     <div [ngClass]="'statusStyle'">
       Status
-      <select [(ngModel)]="interventionService.selectStatus" (change)="interventionService.onStatusChange()">
+      <select [formControl]="interventionService.selectStatus" (change)="interventionService.onStatusChange()">
         <!--          TODO: use id instead of name in value-->
         <!--          DONE:-->
         <option [value]="'0'" selected>All Statuses</option>
@@ -123,8 +121,8 @@
       </th>
     </tr>
 
-    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions">
-      <td><a href="">{{currentIntervention.InterventionCode}}</a></td>
+    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions" #interventionRow>
+      <td (click)="clickRow(currentIntervention)"><a href="">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
       <td>{{currentIntervention.CommericalName}}</td>
       <td>{{currentIntervention.InterventionCountryID | getName: "Country"}}</td>
@@ -139,7 +137,7 @@
 
 <p>Pagination</p>
 <div [ngClass]="'flex'">
-  <select [(ngModel)]="countOfVisibleData" (change)="sliceFilteredData()">
+  <select [(ngModel)]="countOfVisibleData" (change)="sliceFilteredData(); getCurrentPage(0)">
     <option [value]="interventionService.filteredInterventions.length">Shaw all</option>
     <option [value]="5">5</option>
     <option [value]="3">3</option>

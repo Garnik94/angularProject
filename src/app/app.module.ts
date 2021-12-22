@@ -11,6 +11,7 @@ import {UserService} from "./service/UserService";
 import {WorkflowService} from "./service/WorkflowService";
 import {GetNamePipe} from './pipes/get-name.pipe';
 import {HttpClientModule} from "@angular/common/http";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -19,13 +20,14 @@ import {HttpClientModule} from "@angular/common/http";
     PortfolioComponent,
     HoverDirective,
     GetNamePipe,
-    GetNamePipe,
+    GetNamePipe
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    // RouterModule.forRoot()
   ],
   providers: [
     CountryService,
