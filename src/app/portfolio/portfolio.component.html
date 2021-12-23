@@ -1,3 +1,8 @@
+<div *ngIf="shawInterventionDetails"
+(click)="shawInterventionDetails = !shawInterventionDetails">
+  <pre>{{interventionDetails}}</pre>
+</div>
+
 <div *ngIf="isCreateButtonPressed">
   <div [ngClass]="'flex'">
     <form [formGroup]="interventionService.newInterventionForm">
@@ -121,8 +126,9 @@
       </th>
     </tr>
 
-    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions" #interventionRow>
-      <td (click)="clickRow(currentIntervention)"><a href="">{{currentIntervention.InterventionCode}}</a></td>
+    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions"
+        (click)="clickRow(currentIntervention)">
+      <td><a href="">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
       <td>{{currentIntervention.CommericalName}}</td>
       <td>{{currentIntervention.InterventionCountryID | getName: "Country"}}</td>

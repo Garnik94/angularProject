@@ -257,61 +257,32 @@ export class InterventionService {
   )
 
   createNewIntervention() {
-    return new Intervention(
-      null,
-      this.newInterventionForm.value["InterventionCode"],
-      null,
-      null,
-      null,
-      this.newInterventionForm.value["LastUpdatedOn"],
-      null,
-      this.newInterventionForm.value["ShortName"],
-      null,
-      null,
-      null,
-      Number(this.newInterventionForm.value["Status"]),
-      Number(this.newInterventionForm.value["Country"]),
-      null,
-      null,
-      null,
-      this.newInterventionForm.value["CommericalName"],
-      Number(this.newInterventionForm.value["User"]),
-      null
-    )
-  }
-
-  logForm() {
-    console.log(this.newInterventionForm);
-  }
-
-  toJson(intervention: Intervention) {
     return JSON.stringify({
-        ActualEndDate: intervention.ActualEndDate,
-        InterventionCode: intervention.InterventionCode,
-        Description: intervention.Description,
-        InterventionProgrammeInstanceID: intervention.InterventionProgrammeInstanceID,
-        InterventionID: intervention.InterventionID,
-        DateUpdated: intervention.DateUpdated,
-        Title: intervention.Title,
-        ShortName: intervention.ShortName,
-        ActualStartDate: intervention.ActualStartDate,
-        interventionPartnerInstitutions: intervention.interventionPartnerInstitutions,
-        lastActionComment: intervention.lastActionComment,
-        workflowStateId: intervention.workflowStateId,
-        InterventionCountryID: intervention.InterventionCountryID,
-        ExternalReferenceNumber: intervention.ExternalReferenceNumber,
-        InterventionInstanceId: intervention.InterventionInstanceId,
-        SAEndDate: intervention.SAEndDate,
-        CommericalName: intervention.CommericalName,
-        UpdatedUserID: intervention.UpdatedUserID,
-        MasterID: intervention.MasterID
+        ActualEndDate: null,
+        InterventionCode: this.newInterventionForm.value["InterventionCode"],
+        Description: null,
+        InterventionProgrammeInstanceID: null,
+        InterventionID: null,
+        DateUpdated: this.newInterventionForm.value["LastUpdatedOn"],
+        Title: null,
+        ShortName: this.newInterventionForm.value["ShortName"],
+        ActualStartDate: null,
+        interventionPartnerInstitutions: null,
+        lastActionComment: null,
+        workflowStateId: Number(this.newInterventionForm.value["Status"]),
+        InterventionCountryID: Number(this.newInterventionForm.value["Country"]),
+        ExternalReferenceNumber: null,
+        InterventionInstanceId: null,
+        SAEndDate: null,
+        CommericalName: this.newInterventionForm.value["CommericalName"],
+        UpdatedUserID: Number(this.newInterventionForm.value["User"]),
+        MasterID: null
       }
     )
   }
 
   logNewIntervention() {
     console.log(this.createNewIntervention());
-    console.log(this.toJson(this.createNewIntervention()));
   }
 
   // public getInterventions(sortingOption: { fieldName: string, isAsc: boolean }) {

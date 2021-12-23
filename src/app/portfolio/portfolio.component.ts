@@ -28,9 +28,9 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   isCreateButtonPressed: boolean = false;
 
-  clickRow(intervention: Intervention){
-    console.log("click")
-  }
+  shawInterventionDetails = false;
+
+  interventionDetails: string;
 
   constructor(
     public interventionService: InterventionService,
@@ -81,18 +81,33 @@ export class PortfolioComponent implements OnInit, OnChanges {
     return slicedArray;
   }
 
-  // logProps() {
-  //   // this.countOfPages.length = Math.ceil(this.interventionService.filteredInterventions.length / Number(this.countOfVisibleData));
-  //   console.log(`${this.countOfVisibleData} ${this.countOfPages.length}`)
-  // }
-  //
-  // logSlicedArray() {
-  //   console.log(this.sliceFilteredData());
-  // }
-
   getCurrentPage(currentPage: number) {
     this.interventionService.filteredInterventions = Array.from(this.tempInterventionsBeforeSearch);
     this.interventionService.filteredInterventions = this.sliceFilteredData()[currentPage];
+  }
+
+  clickRow(intervention: Intervention){
+    this.shawInterventionDetails = true;
+    this.interventionDetails = `
+       ActualEndDate: ${intervention.ActualEndDate}
+       InterventionCode: ${intervention.InterventionCode}
+       Description: ${intervention.Description}
+       InterventionProgrammeInstanceID: ${intervention.InterventionProgrammeInstanceID}
+       InterventionID: ${intervention.InterventionID}
+       DateUpdated: ${intervention.DateUpdated}
+       Title: ${intervention.Title}
+       ShortName: ${intervention.ShortName}
+       ActualStartDate: ${intervention.ActualStartDate}
+       interventionPartnerInstitutions: ${intervention.interventionPartnerInstitutions}
+       lastActionComment: ${intervention.lastActionComment}
+       workflowStateId: ${intervention.workflowStateId}
+       InterventionCountryID: ${intervention.InterventionCountryID}
+       ExternalReferenceNumber: ${intervention.ExternalReferenceNumber}
+       InterventionInstanceId: ${intervention.InterventionInstanceId}
+       SAEndDate: ${intervention.SAEndDate}
+       CommericalName: ${intervention.CommericalName}
+       UpdatedUserID: ${intervention.UpdatedUserID}
+       MasterID: ${intervention.MasterID}`
   }
 
 }
