@@ -69,8 +69,8 @@
       </div>
     </form>
   </div>
-  <button (click)="interventionService.logNewIntervention(); isCreateButtonPressed = false">Submit</button>
-  <button (click)="isCreateButtonPressed = false">Cancel</button>
+  <button [ngClass]="'submitButtonStyle'" (click)="interventionService.logNewIntervention(); isCreateButtonPressed = false">Submit</button>
+  <button [ngClass]="'cancelButtonStyle'" (click)="isCreateButtonPressed = false">Cancel</button>
 </div>
 
 
@@ -127,8 +127,8 @@
     </tr>
 
     <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions"
-        (click)="clickRow(currentIntervention)">
-      <td><a href="">{{currentIntervention.InterventionCode}}</a></td>
+        (click)="interventionService.onSelect(currentIntervention)">
+      <td><a routerLink="/intervention" routerActive="active">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
       <td>{{currentIntervention.CommericalName}}</td>
       <td>{{currentIntervention.InterventionCountryID | getName: "Country"}}</td>
@@ -152,5 +152,7 @@
 </div>
 
 <button *ngFor="let page of countOfPages; let i = index" (click)="getCurrentPage(i)">{{i + 1}}</button>
+
+<router-outlet></router-outlet>
 
 

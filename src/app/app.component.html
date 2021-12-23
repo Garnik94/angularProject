@@ -1,19 +1,2 @@
-<div [ngClass]="'flex'">
-
-  <div>
-    <search (onSearch)="search($event)"
-            (onReset)="reset()">
-    </search>
-  </div>
-
-  <div [ngClass]="'flex'">
-    <portfolio
-               [searchOptions]="searchFields"
-
-    ></portfolio>
-<!--    [interventionList]="interventionList"-->
-
-  </div>
-
-</div>
+<router-outlet></router-outlet>
 

@@ -12,6 +12,7 @@ import {UserService} from "../service/UserService";
 import {FormGroup} from "@angular/forms";
 import {zip} from "rxjs";
 import {CountryService} from "../service/CountryService";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'portfolio',
@@ -37,6 +38,7 @@ export class PortfolioComponent implements OnInit, OnChanges {
     public countryService: CountryService,
     public userService: UserService,
     public workflowService: WorkflowService,
+    public router: Router
   ) {
   }
 
@@ -84,30 +86,6 @@ export class PortfolioComponent implements OnInit, OnChanges {
   getCurrentPage(currentPage: number) {
     this.interventionService.filteredInterventions = Array.from(this.tempInterventionsBeforeSearch);
     this.interventionService.filteredInterventions = this.sliceFilteredData()[currentPage];
-  }
-
-  clickRow(intervention: Intervention){
-    this.shawInterventionDetails = true;
-    this.interventionDetails = `
-       ActualEndDate: ${intervention.ActualEndDate}
-       InterventionCode: ${intervention.InterventionCode}
-       Description: ${intervention.Description}
-       InterventionProgrammeInstanceID: ${intervention.InterventionProgrammeInstanceID}
-       InterventionID: ${intervention.InterventionID}
-       DateUpdated: ${intervention.DateUpdated}
-       Title: ${intervention.Title}
-       ShortName: ${intervention.ShortName}
-       ActualStartDate: ${intervention.ActualStartDate}
-       interventionPartnerInstitutions: ${intervention.interventionPartnerInstitutions}
-       lastActionComment: ${intervention.lastActionComment}
-       workflowStateId: ${intervention.workflowStateId}
-       InterventionCountryID: ${intervention.InterventionCountryID}
-       ExternalReferenceNumber: ${intervention.ExternalReferenceNumber}
-       InterventionInstanceId: ${intervention.InterventionInstanceId}
-       SAEndDate: ${intervention.SAEndDate}
-       CommericalName: ${intervention.CommericalName}
-       UpdatedUserID: ${intervention.UpdatedUserID}
-       MasterID: ${intervention.MasterID}`
   }
 
 }

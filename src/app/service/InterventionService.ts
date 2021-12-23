@@ -9,6 +9,7 @@ import {UserService} from "./UserService";
 import {WorkflowService} from "./WorkflowService";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import {User} from "../models/User";
 
 @Injectable()
 export class InterventionService {
@@ -21,7 +22,6 @@ export class InterventionService {
 
   searchOptions: FormGroup;
 
-  // selectStatus: number = 0;
   selectStatus: FormControl = new FormControl(0);
 
   isSearchMode = false;
@@ -30,7 +30,8 @@ export class InterventionService {
     private http: HttpClient,
     public countryService: CountryService,
     public userService: UserService,
-    public workflowService: WorkflowService
+    public workflowService: WorkflowService,
+    public router: Router
   ) {
   }
 
@@ -85,8 +86,6 @@ export class InterventionService {
 
   /**-------------Filter By Search Fields--------------*/
 
-  // TODO: reset-i jamanak ete status ka @ntrac filtrel @st status-i
-  // DONE
   generalSearch(): void {
     if (this.searchOptions === null && this.isSearchMode) {
       this.isSearchMode = false;
@@ -283,6 +282,15 @@ export class InterventionService {
 
   logNewIntervention() {
     console.log(this.createNewIntervention());
+  }
+
+  public getInterventionById(interventionId: number): Intervention {
+    return this.filteredInterventions
+      .find(currentIntervention => currentIntervention.InterventionInstanceId === interventionId);
+  }
+
+  onSelect(selectedIntervention: Intervention) {
+    this.router.navigate(["intervention", selectedIntervention.InterventionInstanceId])
   }
 
   // public getInterventions(sortingOption: { fieldName: string, isAsc: boolean }) {

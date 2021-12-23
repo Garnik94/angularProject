@@ -12,6 +12,9 @@ import {WorkflowService} from "./service/WorkflowService";
 import {GetNamePipe} from './pipes/get-name.pipe';
 import {HttpClientModule} from "@angular/common/http";
 import {RouterModule} from "@angular/router";
+import { InterventionDetailsComponent } from './intervention-details/intervention-details.component';
+import {routes} from "./app.routes";
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -20,14 +23,16 @@ import {RouterModule} from "@angular/router";
     PortfolioComponent,
     HoverDirective,
     GetNamePipe,
-    GetNamePipe
+    GetNamePipe,
+    InterventionDetailsComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    // RouterModule.forRoot()
+    RouterModule.forRoot(routes)
   ],
   providers: [
     CountryService,

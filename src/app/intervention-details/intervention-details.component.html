@@ -1,0 +1,25 @@
+<div *ngIf="intervention">
+  <h2>Selected intervention</h2>
+  <pre>
+    ActualEndDate: {{intervention.ActualEndDate}}
+    InterventionCode: {{intervention.InterventionCode}}
+    Description: {{intervention.Description}}
+    InterventionProgrammeInstanceID: {{intervention.InterventionProgrammeInstanceID}}
+    InterventionID: {{intervention.InterventionID}}
+    DateUpdated: {{intervention.DateUpdated}}
+    Title: {{intervention.Title}}
+    ShortName: {{intervention.ShortName}}
+    ActualStartDate: {{intervention.ActualStartDate}}
+    interventionPartnerInstitutions: {{intervention.interventionPartnerInstitutions}}
+    lastActionComment: {{intervention.lastActionComment}}
+    workflowStateId: {{intervention.workflowStateId}}
+    InterventionCountryID: {{intervention.InterventionCountryID}}
+    ExternalReferenceNumber: {{intervention.ExternalReferenceNumber}}
+    InterventionInstanceId: {{intervention.InterventionInstanceId}}
+    SAEndDate: {{intervention.SAEndDate}}
+    CommericalName: {{intervention.CommericalName}}
+    UpdatedUserID: {{intervention.UpdatedUserID}}
+    MasterID: {{intervention.MasterID}}
+  </pre>
+  <button (click)="goToPortfolio()" [ngClass]="'searchButtonStyle'">Go back to portfolio</button>
+</div>

@@ -9,17 +9,5 @@ import {FormGroup} from "@angular/forms";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  // TODO: move in portfolio
-  // DONE
-  // public interventionList: Intervention[] = InterventionService.getInterventionArray();
 
-  public searchFields: FormGroup;
-
-  search(searchFields: FormGroup): void {
-    this.searchFields = searchFields;
-  }
-
-  reset(): void {
-    this.searchFields = null;
-  }
 }
