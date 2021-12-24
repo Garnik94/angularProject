@@ -126,7 +126,10 @@
       </th>
     </tr>
 
-    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions"
+    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions | paginate: { itemsPerPage: 10,
+    currentPage: page,
+    totalItems: totalLength
+    }"
         (click)="interventionService.onSelect(currentIntervention)">
       <td><a routerLink="/intervention" routerActive="active">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
@@ -138,13 +141,14 @@
     </tr>
     </thead>
   </table>
+  <pagination-controls (pageChange)="page = $event"></pagination-controls>
 
 </div>
 
 <p>Pagination</p>
 <div [ngClass]="'flex'">
   <select [(ngModel)]="countOfVisibleData" (change)="sliceFilteredData(); getCurrentPage(0)">
-    <option [value]="interventionService.filteredInterventions.length">Shaw all</option>
+    <option [value]="interventionService.filteredInterventions?.length">Shaw all</option>
     <option [value]="5">5</option>
     <option [value]="3">3</option>
     <option [value]="2">2</option>

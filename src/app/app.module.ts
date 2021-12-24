@@ -15,6 +15,7 @@ import {RouterModule} from "@angular/router";
 import { InterventionDetailsComponent } from './intervention-details/intervention-details.component';
 import {routes} from "./app.routes";
 import { HomeComponent } from './home/home.component';
+import {NgxPaginationModule} from "ngx-pagination";
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { HomeComponent } from './home/home.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    NgxPaginationModule
   ],
   providers: [
     CountryService,

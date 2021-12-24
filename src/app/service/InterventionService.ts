@@ -39,8 +39,6 @@ export class InterventionService {
     return this.http.get("/assets/data/response.json")
       .pipe(
         map((data: any) => {
-          let responses = data["data"] as Array<Intervention>;
-          console.log(responses[0]);
           return data.data.map((currentIntervention: any) =>
             new Intervention(
               (currentIntervention as InterventionInterface).ActualEndDate,
@@ -69,8 +67,7 @@ export class InterventionService {
 
   onStatusChange(): void {
     if (!this.isSearchMode) {
-      this.tempInterventionsBeforeStatusChange = Array.from(this.filteredInterventions);
-      console.log(this.tempInterventionsBeforeStatusChange === this.filteredInterventions);
+      this.tempInterventionsBeforeStatusChange = this.filteredInterventions;
     }
     if (Number(this.selectStatus.value) === 0) {
       this.filteredInterventions = this.tempInterventionsBeforeStatusChange;
@@ -101,9 +98,9 @@ export class InterventionService {
   }
 
   filterBYCountry(): void {
-    const searchOptions = this.searchOptions.value;
+    const searchOptions = this.searchOptions?.value;
     this.onStatusChange();
-    if (searchOptions.countryOption && searchOptions.countryOption !== 0) {
+    if (searchOptions?.countryOption && searchOptions?.countryOption !== 0) {
       this.filteredInterventions = this.filteredInterventions
         .filter(currentElement => {
             return currentElement.InterventionCountryID === Number(searchOptions.countryOption);
@@ -113,12 +110,12 @@ export class InterventionService {
   }
 
   filterByKeywordOption(): void {
-    const searchOptions = this.searchOptions.value;
-    if (searchOptions.keywordOption && (
-      searchOptions.CodeOfTheIntervention ||
-      searchOptions.TitleOfTheIntervention ||
-      searchOptions.InterventionShortName ||
-      searchOptions.InterventionDescription)) {
+    const searchOptions = this.searchOptions?.value;
+    if (searchOptions?.keywordOption && (
+      searchOptions?.CodeOfTheIntervention ||
+      searchOptions?.TitleOfTheIntervention ||
+      searchOptions?.InterventionShortName ||
+      searchOptions?.InterventionDescription)) {
 
       const keywordOption: string = searchOptions.keywordOption.trim();
       this.filteredInterventions = this.filteredInterventions.filter(intervention =>
@@ -130,13 +127,13 @@ export class InterventionService {
   }
 
   filterByActualDate(): void {
-    const searchOptions = this.searchOptions.value;
-    if (searchOptions.dateFrom && searchOptions.dateTo) {
+    const searchOptions = this.searchOptions?.value;
+    if (searchOptions?.dateFrom && searchOptions?.dateTo) {
       this.filterByFromDate(searchOptions);
       this.filterByToDate(searchOptions);
-    } else if (searchOptions.dateFrom && !searchOptions.dateTo) {
+    } else if (searchOptions?.dateFrom && !searchOptions?.dateTo) {
       this.filterByFromDate(searchOptions);
-    } else if (!searchOptions.dateFrom && searchOptions.dateTo) {
+    } else if (!searchOptions?.dateFrom && searchOptions?.dateTo) {
       this.filterByToDate(searchOptions);
     }
   }

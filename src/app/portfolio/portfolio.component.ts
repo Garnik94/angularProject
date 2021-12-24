@@ -33,6 +33,9 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   interventionDetails: string;
 
+  totalLength: number;
+  page: number = 1;
+
   constructor(
     public interventionService: InterventionService,
     public countryService: CountryService,
@@ -57,6 +60,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
           this.interventionService.filteredInterventions = allResponses[2];
           this.tempInterventionsBeforeSearch = this.interventionService.allInterventions;
 
+          this.totalLength = this.interventionService.filteredInterventions.length;
+
           this.countOfVisibleData = this.interventionService.filteredInterventions.length;
           this.countOfPages = Array(1);
         }
@@ -74,7 +79,6 @@ export class PortfolioComponent implements OnInit, OnChanges {
     let endIndex = Number(this.countOfVisibleData);
     this.countOfPages.length = Math.ceil(this.interventionService.filteredInterventions.length / Number(this.countOfVisibleData));
     let slicedArray: Array<Array<Intervention>> = [];
-    console.log("length " + this.countOfPages.length);
     for (let i = 0; i < this.countOfPages.length; i++) {
       slicedArray.push(this.interventionService.filteredInterventions.slice(startIndex, endIndex));
       startIndex = endIndex;
