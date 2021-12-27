@@ -10,17 +10,17 @@ export class HomeComponent implements OnInit {
 
   public searchFields: FormGroup;
 
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
   search(searchFields: FormGroup): void {
     this.searchFields = searchFields;
   }
 
   reset(): void {
     this.searchFields = null;
-  }
-
-  constructor() { }
-
-  ngOnInit(): void {
   }
 
 }

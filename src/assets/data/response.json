@@ -328,11 +328,11 @@
     {
       "ActualEndDate": null,
       "InterventionCode": "Demo Intervention",
-      "Description": null,
+      "Description": "This intervention was created using create button",
       "InterventionProgrammeInstanceID": null,
-      "InterventionID": null,
+      "InterventionID": 21024,
       "DateUpdated": "2021-12-02",
-      "Title": null,
+      "Title": "Intervention for demonstration",
       "ShortName": "DI",
       "ActualStartDate": null,
       "interventionPartnerInstitutions": null,
@@ -347,6 +347,7 @@
       "MasterID": null
     }
   ],
+
   "meta": {
     "totalRowCount": 392
   }

@@ -1,16 +1,11 @@
-<div [ngClass]="'flex'">
+<div class="flex">
 
   <div>
-    <search (onSearch)="search($event)"
-            (onReset)="reset()">
-    </search>
+    <search (onSearch)="search($event)" (onReset)="reset()"></search>
   </div>
 
-  <div [ngClass]="'flex'" style="margin-left: 50px;">
-    <portfolio
-      [searchOptions]="searchFields"
-
-    ></portfolio>
+  <div class="flex" style="margin-left: 50px;">
+    <portfolio [searchOptions]="searchFields"></portfolio>
   </div>
 
 </div>

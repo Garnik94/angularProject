@@ -12,6 +12,7 @@ export class InterventionDetailsComponent implements OnInit {
 
   intervention: Intervention;
 
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -27,7 +28,7 @@ export class InterventionDetailsComponent implements OnInit {
   }
 
   goToPortfolio() {
-    this.router.navigate(["home"])
+    this.router.navigate(["interventions"])
   }
 
 }

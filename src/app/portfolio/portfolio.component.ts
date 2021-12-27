@@ -21,17 +21,13 @@ import {Router} from "@angular/router";
 })
 export class PortfolioComponent implements OnInit, OnChanges {
 
+  @Input()
+  searchOptions: FormGroup;
+
   tempInterventionsBeforeSearch: Intervention[];
-
   countOfVisibleData: number;
-
   countOfPages: number[];
-
   isCreateButtonPressed: boolean = false;
-
-  shawInterventionDetails = false;
-
-  interventionDetails: string;
 
   totalLength: number;
   page: number = 1;
@@ -44,9 +40,6 @@ export class PortfolioComponent implements OnInit, OnChanges {
     public router: Router
   ) {
   }
-
-  @Input()
-  searchOptions: FormGroup;
 
   ngOnInit(): void {
     zip(
@@ -63,7 +56,7 @@ export class PortfolioComponent implements OnInit, OnChanges {
           this.totalLength = this.interventionService.filteredInterventions.length;
 
           this.countOfVisibleData = this.interventionService.filteredInterventions.length;
-          this.countOfPages = Array(1);
+          this.countOfPages = [1];
         }
       )
   }
@@ -82,12 +75,13 @@ export class PortfolioComponent implements OnInit, OnChanges {
     for (let i = 0; i < this.countOfPages.length; i++) {
       slicedArray.push(this.interventionService.filteredInterventions.slice(startIndex, endIndex));
       startIndex = endIndex;
-      endIndex += startIndex;
+      endIndex += Number(this.countOfVisibleData);;
     }
     return slicedArray;
   }
 
   getCurrentPage(currentPage: number) {
+    console.log(this.interventionService.isSearchMode)
     this.interventionService.filteredInterventions = Array.from(this.tempInterventionsBeforeSearch);
     this.interventionService.filteredInterventions = this.sliceFilteredData()[currentPage];
   }

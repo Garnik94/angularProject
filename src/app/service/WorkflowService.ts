@@ -3,8 +3,6 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {WorkflowStateInterface} from "../interfaces/WorkflowStateInterface";
 import {map} from "rxjs/operators";
-import {User} from "../models/User";
-import {UserInterface} from "../interfaces/UserInterface";
 
 @Injectable()
 export class WorkflowService {
@@ -22,7 +20,6 @@ export class WorkflowService {
             new WorkflowStates(
               (currentWorkflow as WorkflowStateInterface).WFSTATEID,
               (currentWorkflow as WorkflowStateInterface).name
-
           ));
         })
       )

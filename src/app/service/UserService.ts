@@ -3,8 +3,6 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {UserInterface} from "../interfaces/UserInterface";
 import {map} from "rxjs/operators";
-import {Country} from "../models/Country";
-import {CountryInterface} from "../interfaces/CountryInterface";
 
 @Injectable()
 export class UserService {

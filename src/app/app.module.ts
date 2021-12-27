@@ -12,10 +12,11 @@ import {WorkflowService} from "./service/WorkflowService";
 import {GetNamePipe} from './pipes/get-name.pipe';
 import {HttpClientModule} from "@angular/common/http";
 import {RouterModule} from "@angular/router";
-import { InterventionDetailsComponent } from './intervention-details/intervention-details.component';
+import {InterventionDetailsComponent} from './intervention-details/intervention-details.component';
 import {routes} from "./app.routes";
-import { HomeComponent } from './home/home.component';
+import {HomeComponent} from './home/home.component';
 import {NgxPaginationModule} from "ngx-pagination";
+import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {NgxPaginationModule} from "ngx-pagination";
     GetNamePipe,
     GetNamePipe,
     InterventionDetailsComponent,
-    HomeComponent
+    HomeComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

@@ -22,6 +22,7 @@ export class InterventionService {
 
   searchOptions: FormGroup;
 
+  // TODO: Move to component
   selectStatus: FormControl = new FormControl(0);
 
   isSearchMode = false;
@@ -63,6 +64,11 @@ export class InterventionService {
           );
         })
       )
+  }
+
+  public getInterventionById(interventionId: number): Intervention {
+    return this.filteredInterventions
+      .find(currentIntervention => currentIntervention.InterventionInstanceId === interventionId);
   }
 
   onStatusChange(): void {
@@ -157,7 +163,7 @@ export class InterventionService {
 
   /**------------------------------------------------------------------------------------------------------------*/
 
-  public sortInterventionList(fieldName: string, isAsc: boolean) {
+  public sortInterventions(fieldName: string, isAsc: boolean) {
     switch (fieldName) {
       case "InterventionCode":
         this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
@@ -279,11 +285,6 @@ export class InterventionService {
 
   logNewIntervention() {
     console.log(this.createNewIntervention());
-  }
-
-  public getInterventionById(interventionId: number): Intervention {
-    return this.filteredInterventions
-      .find(currentIntervention => currentIntervention.InterventionInstanceId === interventionId);
   }
 
   onSelect(selectedIntervention: Intervention) {
