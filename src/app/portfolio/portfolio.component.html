@@ -1,86 +1,12 @@
-<div *ngIf="isCreateButtonPressed">
-  <div [ngClass]="'flex'">
-    <form [formGroup]="interventionService.newInterventionForm">
-      Code of the Intervention<br>
-      <input type="text" formControlName="InterventionCode">
-      <div *ngIf="interventionService.newInterventionForm.get('InterventionCode').hasError('required') &&
-      interventionService.newInterventionForm.get('InterventionCode').touched"
-           style="color: red">
-        Intervention Code is required field
-      </div>
-      <br><br>
-      Short Name<br>
-      <input type="text" formControlName="ShortName">
-      <div *ngIf="interventionService.newInterventionForm.get('ShortName').hasError('required') &&
-      interventionService.newInterventionForm.get('ShortName').touched"
-           style="color: red">
-        Short Name is required field
-      </div>
-      <br><br>
-      Official Intervention Name<br>
-      <input type="text" formControlName="CommericalName">
-      <div *ngIf="interventionService.newInterventionForm.get('CommericalName').hasError('required') &&
-      interventionService.newInterventionForm.get('CommericalName').touched"
-           style="color: red">
-        Official Intervention Name is required field
-      </div>
-      <br><br>
-      Country<br>
-      <select formControlName="Country">
-        <option *ngFor="let currentCountry of countryService.countries"
-                [value]="currentCountry.countryId">{{currentCountry.name["3"]}}</option>
-      </select>
-      <div *ngIf="interventionService.newInterventionForm.get('Country').hasError('required') &&
-      interventionService.newInterventionForm.get('Country').touched"
-           style="color: red">
-        Country is required field
-      </div>
-      <br><br>
-      Status<br>
-      <select formControlName="Status">
-        <option *ngFor="let currentWorkflow of workflowService.workflowStates"
-                [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
-      </select>
-      <div *ngIf="interventionService.newInterventionForm.get('Status').hasError('required') &&
-      interventionService.newInterventionForm.get('Status').touched"
-           style="color: red">
-        Status is required field
-      </div>
-      <br><br>
-      Last Updated By<br>
-      <select formControlName="User">
-        <option *ngFor="let currentUser of userService.users"
-                [value]="currentUser.UserID">{{currentUser.name["3"]}}</option>
-      </select>
-      <div *ngIf="interventionService.newInterventionForm.get('User').hasError('required') &&
-      interventionService.newInterventionForm.get('User').touched"
-           style="color: red">
-        Last Updated user is required field
-      </div>
-      <br><br>
-      Last Updated On<br>
-      <input type="date" formControlName="LastUpdatedOn">
-      <div *ngIf="interventionService.newInterventionForm.get('LastUpdatedOn').hasError('required') &&
-      interventionService.newInterventionForm.get('LastUpdatedOn').touched"
-           style="color: red">
-        Last Updated On is required field
-      </div>
-    </form>
-  </div>
-  <button [ngClass]="'submitButtonStyle'"
-          (click)="interventionService.logNewIntervention(); isCreateButtonPressed = false">Submit
-  </button>
-  <button [ngClass]="'cancelButtonStyle'" (click)="isCreateButtonPressed = false">Cancel</button>
+<button (click)="logInterventions()">Log get interventions</button>
+<div *ngFor="let object of (logInterventions() | async)">
+  {{object}}
 </div>
-
-
 <div>
-  <div [ngClass]="'flex'">
-    <div [ngClass]="'statusStyle'">
+  <div class="flex">
+    <div class="statusStyle">
       Status
       <select [formControl]="interventionService.selectStatus" (change)="interventionService.onStatusChange()">
-        <!--          TODO: use id instead of name in value-->
-        <!--          DONE:-->
         <option [value]="'0'" selected>All Statuses</option>
         <option *ngFor="let currentWorkflow of workflowService.workflowStates"
                 [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
@@ -88,7 +14,7 @@
     </div>
 
     <div>
-      <button [ngClass]="'searchButtonStyle'" (click)="isCreateButtonPressed = true">Create New Intervention</button>
+      <button class="searchButtonStyle" (click)="interventionService.onSelectCreateNewIntervention()">Create New Intervention</button>
     </div>
   </div>
 
@@ -128,10 +54,11 @@
     </thead>
 
     <tbody>
-    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions | paginate: { itemsPerPage: 10,
-      currentPage: page,
-      totalItems: totalLength
-      }">
+    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions">
+      <!--    | paginate: { itemsPerPage: 10,-->
+      <!--      currentPage: page,-->
+      <!--      totalItems: totalLength-->
+      <!--      }">-->
 
       <!--      <td><a (click)="interventionService.onSelect(currentIntervention)" routerLink="/intervention/{{currentIntervention.InterventionInstanceId}}" routerActive="active">{{currentIntervention.InterventionCode}}</a></td>-->
       <td><a [routerLink]='["/intervention/", currentIntervention.InterventionInstanceId]'
@@ -145,20 +72,22 @@
     </tr>
     </tbody>
   </table>
-  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  <!--  <pagination-controls (pageChange)="page = $event"></pagination-controls>-->
 
 </div>
 
-<p>Pagination</p>
-<div [ngClass]="'flex'">
-  <!-- TODO: Use reactive forms -->
-  <select [(ngModel)]="countOfVisibleData" (change)="getCurrentPage(0)">
-    <option [value]="interventionService.allInterventions?.length">Shaw all</option>
-    <option [value]="5">5</option>
-    <option [value]="3">3</option>
-    <option [value]="2">2</option>
-    <option [value]="1">1</option>
-  </select>
-</div>
+<div class="flex">
+  <div class="flex">
+    <select [formControl]="countOfVisibleData" (change)="getCurrentPage(0)">
+      <option [value]="interventionService.allInterventions?.length">Shaw all</option>
+      <option [value]="5">5</option>
+      <option [value]="3">3</option>
+      <option [value]="2">2</option>
+      <option [value]="1">1</option>
+    </select>
+  </div>
 
-<button *ngFor="let page of countOfPages; let i = index" (click)="getCurrentPage(i)">{{i + 1}}</button>
+  <div class="flex">
+    <button class="pagingButtonStyle" *ngFor="let page of countOfPages; let i = index" (click)="getCurrentPage(i)">{{i + 1}}</button>
+  </div>
+</div>

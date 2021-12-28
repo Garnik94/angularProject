@@ -10,20 +10,30 @@ export class WorkflowService {
   workflowStates: WorkflowStates[] = [];
 
   constructor(private http: HttpClient) {
-  }
-
-  public getWorkflowStates() {
-    return this.http.get("/assets/data/WorkflowStates.json")
+    this.http.get("/assets/data/WorkflowStates.json")
       .pipe(
         map((data: any) => {
           return data.data.map((currentWorkflow: any) =>
             new WorkflowStates(
               (currentWorkflow as WorkflowStateInterface).WFSTATEID,
               (currentWorkflow as WorkflowStateInterface).name
-          ));
+            ));
         })
-      )
+      ).subscribe(workflowStates => this.workflowStates = workflowStates);
   }
+
+  // public getWorkflowStates() {
+  //   return this.http.get("/assets/data/WorkflowStates.json")
+  //     .pipe(
+  //       map((data: any) => {
+  //         return data.data.map((currentWorkflow: any) =>
+  //           new WorkflowStates(
+  //             (currentWorkflow as WorkflowStateInterface).WFSTATEID,
+  //             (currentWorkflow as WorkflowStateInterface).name
+  //         ));
+  //       })
+  //     )
+  // }
 
   public getWorkflowById(workflowId: number): WorkflowStates {
     return this.workflowStates.find(currentWorkflow => currentWorkflow.WFSTATEID === workflowId);

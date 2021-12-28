@@ -13,8 +13,7 @@ export class GetNamePipe implements PipeTransform {
               private userService: UserService) {
   }
 
-  // TODO: don't use any
-  transform(value: any, service: string): any {
+  transform(value: number, service: string): any {
     if (service === "Country") {
       return this.countryService.getCountryName(value);
     } else if (service === "Workflow") {

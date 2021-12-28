@@ -17,6 +17,8 @@ import {routes} from "./app.routes";
 import {HomeComponent} from './home/home.component';
 import {NgxPaginationModule} from "ngx-pagination";
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
+import { PagingButtonDirective } from './directives/paging-button.directive';
+import { CreateNewInterventionComponent } from './create-new-intervention/create-new-intervention.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
     GetNamePipe,
     InterventionDetailsComponent,
     HomeComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    PagingButtonDirective,
+    CreateNewInterventionComponent
   ],
   imports: [
     BrowserModule,
@@ -42,8 +46,7 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
     CountryService,
     InterventionService,
     UserService,
-    WorkflowService,
-    PortfolioComponent
+    WorkflowService
   ],
   bootstrap: [AppComponent]
 })

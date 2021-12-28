@@ -10,10 +10,7 @@ export class UserService {
   users: User[] = [];
 
   constructor(private http: HttpClient) {
-  }
-
-  public getUsers() {
-    return this.http.get("/assets/data/Users.json")
+    this.http.get("/assets/data/Users.json")
       .pipe(
         map((data: any) => {
           return data.data.map((currentUser: any) =>
@@ -24,8 +21,23 @@ export class UserService {
               (currentUser as UserInterface).StatusID)
           );
         })
-      )
+      ).subscribe(users => this.users = users);
   }
+
+  // public getUsers() {
+  //   return this.http.get("/assets/data/Users.json")
+  //     .pipe(
+  //       map((data: any) => {
+  //         return data.data.map((currentUser: any) =>
+  //           new User(
+  //             (currentUser as UserInterface).Email,
+  //             (currentUser as UserInterface).UserID,
+  //             (currentUser as UserInterface).name,
+  //             (currentUser as UserInterface).StatusID)
+  //         );
+  //       })
+  //     )
+  // }
 
   public getUserById(userId: number): User {
     return this.users.find(currentUser => currentUser.UserID === userId);

@@ -20,10 +20,11 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.countryService.getCountries()
-      .subscribe((countries: any) => {
-        this.countryService.countries = countries
-      });
+
+    // this.countryService.getCountries()
+    //   .subscribe((countries: any) => {
+    //     this.countryService.countries = countries
+    //   });
   }
 
   searchFields: FormGroup = new FormGroup({

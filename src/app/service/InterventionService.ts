@@ -3,13 +3,14 @@ import {Country} from "../models/Country";
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {InterventionInterface} from "../interfaces/InterventionInterface";
-import {map} from "rxjs/operators";
+import {map, shareReplay} from "rxjs/operators";
 import {CountryService} from "./CountryService";
 import {UserService} from "./UserService";
 import {WorkflowService} from "./WorkflowService";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {User} from "../models/User";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class InterventionService {
@@ -20,6 +21,8 @@ export class InterventionService {
 
   tempInterventionsBeforeStatusChange: Intervention[];
 
+  isPagingMode: boolean = false;
+
   searchOptions: FormGroup;
 
   // TODO: Move to component
@@ -27,17 +30,15 @@ export class InterventionService {
 
   isSearchMode = false;
 
-  constructor(
-    private http: HttpClient,
-    public countryService: CountryService,
-    public userService: UserService,
-    public workflowService: WorkflowService,
-    public router: Router
-  ) {
-  }
+  public interventions$: Observable<Intervention[]>;
 
-  public getInterventions() {
-    return this.http.get("/assets/data/response.json")
+  constructor(private http: HttpClient,
+              public countryService: CountryService,
+              public userService: UserService,
+              public workflowService: WorkflowService,
+              public router: Router) {
+
+    this.interventions$ = this.http.get("/assets/data/response.json")
       .pipe(
         map((data: any) => {
           return data.data.map((currentIntervention: any) =>
@@ -62,9 +63,50 @@ export class InterventionService {
               (currentIntervention as InterventionInterface).UpdatedUserID,
               (currentIntervention as InterventionInterface).MasterID)
           );
-        })
+        }),
+        shareReplay({bufferSize: 1, refCount: true})
       )
+      // .subscribe(interventions => {
+      //   this.filteredInterventions = interventions;
+      //   this.allInterventions = interventions;
+      // }
+    // )
   }
+
+  // public getInterventions() {
+  //   // this.interventions$.subscribe((interventions: any) => this.filteredInterventions = interventions)
+  //   return this.interventions$;
+  // }
+
+  // public getInterventions() {
+  //   return this.interventions$ = this.http.get("/assets/data/response.json")
+  //     .pipe(
+  //       map((data: any) => {
+  //         return data.data.map((currentIntervention: any) =>
+  //           new Intervention(
+  //             (currentIntervention as InterventionInterface).ActualEndDate,
+  //             (currentIntervention as InterventionInterface).InterventionCode,
+  //             (currentIntervention as InterventionInterface).Description,
+  //             (currentIntervention as InterventionInterface).InterventionInstanceId,
+  //             (currentIntervention as InterventionInterface).InterventionID,
+  //             (currentIntervention as InterventionInterface).DateUpdated,
+  //             (currentIntervention as InterventionInterface).Title,
+  //             (currentIntervention as InterventionInterface).ShortName,
+  //             (currentIntervention as InterventionInterface).ActualStartDate,
+  //             (currentIntervention as InterventionInterface).interventionPartnerInstitutions,
+  //             (currentIntervention as InterventionInterface).lastActionComment,
+  //             (currentIntervention as InterventionInterface).workflowStateId,
+  //             (currentIntervention as InterventionInterface).InterventionCountryID,
+  //             (currentIntervention as InterventionInterface).ExternalReferenceNumber,
+  //             (currentIntervention as InterventionInterface).InterventionInstanceId,
+  //             (currentIntervention as InterventionInterface).SAEndDate,
+  //             (currentIntervention as InterventionInterface).CommericalName,
+  //             (currentIntervention as InterventionInterface).UpdatedUserID,
+  //             (currentIntervention as InterventionInterface).MasterID)
+  //         );
+  //       }),
+  //     );
+  // }
 
   public getInterventionById(interventionId: number): Intervention {
     return this.filteredInterventions
@@ -90,6 +132,8 @@ export class InterventionService {
   /**-------------Filter By Search Fields--------------*/
 
   generalSearch(): void {
+    console.log(this.filteredInterventions);
+    this.isPagingMode = false;
     if (this.searchOptions === null && this.isSearchMode) {
       this.isSearchMode = false;
       this.filteredInterventions = this.allInterventions;
@@ -107,6 +151,10 @@ export class InterventionService {
     const searchOptions = this.searchOptions?.value;
     this.onStatusChange();
     if (searchOptions?.countryOption && searchOptions?.countryOption !== 0) {
+      // this.interventions$
+      //   .pipe(
+      //     map(interventions => )
+      //   )
       this.filteredInterventions = this.filteredInterventions
         .filter(currentElement => {
             return currentElement.InterventionCountryID === Number(searchOptions.countryOption);
@@ -247,55 +295,15 @@ export class InterventionService {
 
   /**-------------------------------------------------------------------------*/
 
-  newInterventionForm: FormGroup = new FormGroup({
-      InterventionCode: new FormControl("", Validators.required),
-      ShortName: new FormControl("", Validators.required),
-      CommericalName: new FormControl("", Validators.required),
-      Country: new FormControl(0, Validators.required),
-      Status: new FormControl(0, Validators.required),
-      User: new FormControl(0, Validators.required),
-      LastUpdatedOn: new FormControl(new Date(), Validators.required),
-    }
-  )
-
-  createNewIntervention() {
-    return JSON.stringify({
-        ActualEndDate: null,
-        InterventionCode: this.newInterventionForm.value["InterventionCode"],
-        Description: null,
-        InterventionProgrammeInstanceID: null,
-        InterventionID: null,
-        DateUpdated: this.newInterventionForm.value["LastUpdatedOn"],
-        Title: null,
-        ShortName: this.newInterventionForm.value["ShortName"],
-        ActualStartDate: null,
-        interventionPartnerInstitutions: null,
-        lastActionComment: null,
-        workflowStateId: Number(this.newInterventionForm.value["Status"]),
-        InterventionCountryID: Number(this.newInterventionForm.value["Country"]),
-        ExternalReferenceNumber: null,
-        InterventionInstanceId: null,
-        SAEndDate: null,
-        CommericalName: this.newInterventionForm.value["CommericalName"],
-        UpdatedUserID: Number(this.newInterventionForm.value["User"]),
-        MasterID: null
-      }
-    )
-  }
-
-  logNewIntervention() {
-    console.log(this.createNewIntervention());
-  }
-
-  onSelect(selectedIntervention: Intervention) {
-    this.router.navigate(["intervention", selectedIntervention.InterventionInstanceId])
+  onSelectCreateNewIntervention() {
+    this.router.navigate(["createNewIntervention"]);
   }
 
   // public getInterventions(sortingOption: { fieldName: string, isAsc: boolean }) {
   //   return this.http.get("/assets/data/response.json")
   //     .pipe(
   //       map((data: any) => {
-  //         // TODO: sort data
+  //         //
   //         return data.data;
   //       })
   //     )
@@ -305,7 +313,7 @@ export class InterventionService {
   //   return this.http.get("/assets/data/response.json")
   //     .pipe(
   //       map((data: any) => {
-  //         // TODO: filter and sort data
+  //         //
   //         return data.data;
   //       })
   //     )

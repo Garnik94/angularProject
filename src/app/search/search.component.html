@@ -1,32 +1,29 @@
-<!--TODO: use class instead of ngClass-->
-<div [ngClass]="'flex'" [formGroup]="searchFields">
+<div class="flex" [formGroup]="searchFields">
   <div style="border: solid" >
-    <div [ngClass]="'searchDiv'">
+    <div class="searchDiv">
       <h2>{{title}}</h2>
     </div>
 
-    <div [ngClass]="'buttonDiv'">
-      <button [ngClass]="'searchButtonStyle'" (click)="search()">SEARCH</button>
-      <button [ngClass]="'resetButtonStyle'" (click)="reset()">RESET</button>
+    <div class="buttonDiv">
+      <button class="searchButtonStyle" (click)="search()">SEARCH</button>
+      <button class="resetButtonStyle" (click)="reset()">RESET</button>
     </div>
 
-    <div [ngClass]="'countryListStyle'">
+    <div class="countryListStyle">
       <div style="margin-left: 20px">
         <p>Country</p>
-        <select [ngClass]="'inputStyle'" formControlName="countryOption">
+        <select class="inputStyle" formControlName="countryOption">
           <option [value]="'Select One'">--Select One--</option>
-          <!--          TODO: use id instead of name in value-->
-          <!--          DONE-->
           <option *ngFor="let currentCountry of countryService.countries"
                   [value]="currentCountry.countryId">{{currentCountry.name["3"]}}</option>
         </select>
       </div>
     </div>
 
-    <div [ngClass]="'keywordStyle'">
+    <div class="keywordStyle">
       <div style="margin-left: 20px">
         <p>Keyword</p>
-        <input [ngClass]="'inputStyle'" formControlName="keywordOption">
+        <input class="inputStyle" formControlName="keywordOption">
         <br><br>
         <input type="checkbox" formControlName="CodeOfTheIntervention">Code of the
         intervention
@@ -42,13 +39,13 @@
       </div>
     </div>
 
-    <div [ngClass]="'actualDateStyle'">
+    <div class="actualDateStyle">
       <div style="margin-left: 20px">
         <h3>Actual Start Date</h3>
         <p>From</p>
-        <input [ngClass]="'inputStyle'" type="date" formControlName="dateFrom">
+        <input class="inputStyle" type="date" formControlName="dateFrom">
         <p>To</p>
-        <input [ngClass]="'inputStyle'" type="date" formControlName="dateTo">
+        <input class="inputStyle" type="date" formControlName="dateTo">
       </div>
     </div>
   </div>

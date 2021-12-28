@@ -9,7 +9,7 @@ import {Intervention} from "../models/Intervention";
 import {InterventionService} from "../service/InterventionService";
 import {WorkflowService} from "../service/WorkflowService";
 import {UserService} from "../service/UserService";
-import {FormGroup} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {zip} from "rxjs";
 import {CountryService} from "../service/CountryService";
 import {Router} from "@angular/router";
@@ -25,10 +25,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
   searchOptions: FormGroup;
 
   tempInterventionsBeforeSearch: Intervention[];
-  countOfVisibleData: number;
+  countOfVisibleData: FormControl = new FormControl(this.interventionService.filteredInterventions.length);
   countOfPages: number[];
-  isCreateButtonPressed: boolean = false;
-
   totalLength: number;
   page: number = 1;
 
@@ -42,23 +40,32 @@ export class PortfolioComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    // this.interventionService.getInterventions();
+    // this.countryService.getCountries();
     zip(
-      this.userService.getUsers(),
-      this.workflowService.getWorkflowStates(),
-      this.interventionService.getInterventions())
+      // this.userService.getUsers(),
+      // this.workflowService.getWorkflowStates(),
+      // this.interventionService.getInterventions()
+    )
       .subscribe(allResponses => {
-          this.userService.users = allResponses[0];
-          this.workflowService.workflowStates = allResponses[1];
-          this.interventionService.allInterventions = allResponses[2];
-          this.interventionService.filteredInterventions = allResponses[2];
+          // this.userService.users = allResponses[0];
+          // this.workflowService.workflowStates = allResponses[0];
+          // this.interventionService.allInterventions = allResponses[2];
+          // this.interventionService.filteredInterventions = allResponses[2];
           this.tempInterventionsBeforeSearch = this.interventionService.allInterventions;
 
           this.totalLength = this.interventionService.filteredInterventions.length;
-
-          this.countOfVisibleData = this.interventionService.filteredInterventions.length;
           this.countOfPages = [1];
         }
       )
+    // this.interventionService.getInterventions().subscribe(interventions => {
+    //   this.interventionService.filteredInterventions = interventions;
+    // })
+  }
+
+  logInterventions(){
+    // console.log(this.interventionService.interventions$);
+    return this.interventionService.interventions$;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -69,21 +76,28 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   sliceFilteredData() {
     let startIndex = 0;
-    let endIndex = Number(this.countOfVisibleData);
-    this.countOfPages.length = Math.ceil(this.interventionService.filteredInterventions.length / Number(this.countOfVisibleData));
+    let endIndex = Number(this.countOfVisibleData.value);
+    this.countOfPages.length = Math.ceil(this.interventionService.filteredInterventions.length / Number(this.countOfVisibleData.value));
     let slicedArray: Array<Array<Intervention>> = [];
     for (let i = 0; i < this.countOfPages.length; i++) {
       slicedArray.push(this.interventionService.filteredInterventions.slice(startIndex, endIndex));
       startIndex = endIndex;
-      endIndex += Number(this.countOfVisibleData);;
+      endIndex += Number(this.countOfVisibleData.value);
     }
     return slicedArray;
   }
 
+  InterventionsBeforePaging: Intervention[];
+
   getCurrentPage(currentPage: number) {
-    console.log(this.interventionService.isSearchMode)
-    this.interventionService.filteredInterventions = Array.from(this.tempInterventionsBeforeSearch);
+    if (!this.interventionService.isPagingMode){
+      this.InterventionsBeforePaging = Array.from(this.interventionService.filteredInterventions);
+    }
+    this.interventionService.filteredInterventions = Array.from(this.InterventionsBeforePaging);
+    // console.log(this.interventionService.filteredInterventions);
+    // this.interventionService.filteredInterventions = Array.from(this.tempInterventionsBeforeSearch);
     this.interventionService.filteredInterventions = this.sliceFilteredData()[currentPage];
+    this.interventionService.isPagingMode = true;
   }
 
 }
