@@ -1,7 +1,7 @@
-<button (click)="logInterventions()">Log get interventions</button>
-<div *ngFor="let object of (logInterventions() | async)">
-  {{object}}
-</div>
+<!--<button (click)="logInterventions()">Log get interventions</button>-->
+<!--<div *ngFor="let object of (logInterventions() | async)">-->
+<!--  {{object.ShortName}}-->
+<!--</div>-->
 <div>
   <div class="flex">
     <div class="statusStyle">
@@ -54,7 +54,7 @@
     </thead>
 
     <tbody>
-    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions">
+    <tr hover *ngFor="let currentIntervention of interventionService.getInterventions() | async">
       <!--    | paginate: { itemsPerPage: 10,-->
       <!--      currentPage: page,-->
       <!--      totalItems: totalLength-->

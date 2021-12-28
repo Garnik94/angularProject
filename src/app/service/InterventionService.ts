@@ -30,7 +30,9 @@ export class InterventionService {
 
   isSearchMode = false;
 
-  public interventions$: Observable<Intervention[]>;
+  private filteredInterventions$: Observable<Intervention[]>;
+  private allInterventions$: Observable<Intervention[]>;
+  private tempInterventionsBeforeStatusChange$: Observable<Intervention[]>;
 
   constructor(private http: HttpClient,
               public countryService: CountryService,
@@ -38,7 +40,7 @@ export class InterventionService {
               public workflowService: WorkflowService,
               public router: Router) {
 
-    this.interventions$ = this.http.get("/assets/data/response.json")
+    this.filteredInterventions$ = this.http.get("/assets/data/response.json")
       .pipe(
         map((data: any) => {
           return data.data.map((currentIntervention: any) =>
@@ -66,47 +68,12 @@ export class InterventionService {
         }),
         shareReplay({bufferSize: 1, refCount: true})
       )
-      // .subscribe(interventions => {
-      //   this.filteredInterventions = interventions;
-      //   this.allInterventions = interventions;
-      // }
-    // )
+      this.allInterventions$ = this.filteredInterventions$;
   }
 
-  // public getInterventions() {
-  //   // this.interventions$.subscribe((interventions: any) => this.filteredInterventions = interventions)
-  //   return this.interventions$;
-  // }
-
-  // public getInterventions() {
-  //   return this.interventions$ = this.http.get("/assets/data/response.json")
-  //     .pipe(
-  //       map((data: any) => {
-  //         return data.data.map((currentIntervention: any) =>
-  //           new Intervention(
-  //             (currentIntervention as InterventionInterface).ActualEndDate,
-  //             (currentIntervention as InterventionInterface).InterventionCode,
-  //             (currentIntervention as InterventionInterface).Description,
-  //             (currentIntervention as InterventionInterface).InterventionInstanceId,
-  //             (currentIntervention as InterventionInterface).InterventionID,
-  //             (currentIntervention as InterventionInterface).DateUpdated,
-  //             (currentIntervention as InterventionInterface).Title,
-  //             (currentIntervention as InterventionInterface).ShortName,
-  //             (currentIntervention as InterventionInterface).ActualStartDate,
-  //             (currentIntervention as InterventionInterface).interventionPartnerInstitutions,
-  //             (currentIntervention as InterventionInterface).lastActionComment,
-  //             (currentIntervention as InterventionInterface).workflowStateId,
-  //             (currentIntervention as InterventionInterface).InterventionCountryID,
-  //             (currentIntervention as InterventionInterface).ExternalReferenceNumber,
-  //             (currentIntervention as InterventionInterface).InterventionInstanceId,
-  //             (currentIntervention as InterventionInterface).SAEndDate,
-  //             (currentIntervention as InterventionInterface).CommericalName,
-  //             (currentIntervention as InterventionInterface).UpdatedUserID,
-  //             (currentIntervention as InterventionInterface).MasterID)
-  //         );
-  //       }),
-  //     );
-  // }
+  public getInterventions() {
+    return this.filteredInterventions$;
+  }
 
   public getInterventionById(interventionId: number): Intervention {
     return this.filteredInterventions
@@ -115,16 +82,21 @@ export class InterventionService {
 
   onStatusChange(): void {
     if (!this.isSearchMode) {
-      this.tempInterventionsBeforeStatusChange = this.filteredInterventions;
+      this.tempInterventionsBeforeStatusChange$ = this.filteredInterventions$;
     }
     if (Number(this.selectStatus.value) === 0) {
-      this.filteredInterventions = this.tempInterventionsBeforeStatusChange;
+      this.filteredInterventions$ = this.tempInterventionsBeforeStatusChange$;
       this.isSearchMode = false;
       return;
     } else {
-      this.filteredInterventions = this.tempInterventionsBeforeStatusChange.filter(currentIntervention => {
-        return currentIntervention.workflowStateId === Number(this.selectStatus.value);
-      });
+      this.filteredInterventions$ = this.tempInterventionsBeforeStatusChange$
+        .pipe(
+          map(interventions => interventions
+            .filter(currentIntervention => {
+              return currentIntervention.workflowStateId === Number(this.selectStatus.value);
+            })
+          )
+        )
       this.isSearchMode = true;
     }
   }
@@ -132,14 +104,13 @@ export class InterventionService {
   /**-------------Filter By Search Fields--------------*/
 
   generalSearch(): void {
-    console.log(this.filteredInterventions);
     this.isPagingMode = false;
     if (this.searchOptions === null && this.isSearchMode) {
       this.isSearchMode = false;
-      this.filteredInterventions = this.allInterventions;
+      this.filteredInterventions$ = this.allInterventions$;
       this.onStatusChange();
     } else if (this.searchOptions === null && !this.isSearchMode) {
-      this.filteredInterventions = this.allInterventions;
+      this.filteredInterventions$ = this.allInterventions$;
     } else {
       this.filterBYCountry();
       this.filterByKeywordOption();
@@ -151,15 +122,11 @@ export class InterventionService {
     const searchOptions = this.searchOptions?.value;
     this.onStatusChange();
     if (searchOptions?.countryOption && searchOptions?.countryOption !== 0) {
-      // this.interventions$
-      //   .pipe(
-      //     map(interventions => )
-      //   )
-      this.filteredInterventions = this.filteredInterventions
-        .filter(currentElement => {
-            return currentElement.InterventionCountryID === Number(searchOptions.countryOption);
-          }
-        );
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.filter(currentIntervention => {
+              return currentIntervention.InterventionCountryID === Number(searchOptions.countryOption);
+            })));
     }
   }
 
@@ -172,11 +139,16 @@ export class InterventionService {
       searchOptions?.InterventionDescription)) {
 
       const keywordOption: string = searchOptions.keywordOption.trim();
-      this.filteredInterventions = this.filteredInterventions.filter(intervention =>
-        (searchOptions.CodeOfTheIntervention && intervention.InterventionCode.includes(keywordOption)) ||
-        (searchOptions.TitleOfTheIntervention && intervention.Title.includes(keywordOption)) ||
-        (searchOptions.InterventionShortName && intervention.ShortName.includes(keywordOption)) ||
-        (searchOptions.InterventionDescription && intervention.Description.includes(keywordOption)));
+
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(intervention =>
+            intervention.filter(currentIntervention => {
+              return (searchOptions.CodeOfTheIntervention && currentIntervention.InterventionCode.includes(keywordOption)) ||
+                (searchOptions.TitleOfTheIntervention && currentIntervention.Title.includes(keywordOption)) ||
+                (searchOptions.InterventionShortName && currentIntervention.ShortName.includes(keywordOption)) ||
+                (searchOptions.InterventionDescription && currentIntervention.Description.includes(keywordOption))
+            })));
     }
   }
 
@@ -193,19 +165,19 @@ export class InterventionService {
   }
 
   filterByFromDate(searchOptions: any) {
-    this.filteredInterventions = this.filteredInterventions.filter(intervention => {
-        const actualStartDate = new Date(intervention.ActualStartDate);
-        return new Date(searchOptions.dateFrom) < actualStartDate;
-      }
-    );
+    this.filteredInterventions$ = this.filteredInterventions$.pipe(
+      map(interventions => interventions.filter(intervention => {
+          const actualStartDate = new Date(intervention.ActualStartDate);
+          return new Date(searchOptions.dateFrom) < actualStartDate;
+      })))
   }
 
   filterByToDate(searchOptions: any) {
-    this.filteredInterventions = this.filteredInterventions.filter(intervention => {
-        const actualStartDate = new Date(intervention.ActualStartDate);
-        return actualStartDate < new Date(searchOptions.dateTo);
-      }
-    );
+    this.filteredInterventions$ = this.filteredInterventions$.pipe(
+      map(interventions => interventions.filter(intervention => {
+          const actualStartDate = new Date(intervention.ActualStartDate);
+          return actualStartDate < new Date(searchOptions.dateTo);
+        })))
   }
 
 
@@ -239,57 +211,77 @@ export class InterventionService {
 
   sortByCode_ShortName_CommericalName(isAsc: boolean, propertyName: string): void {
     if (isAsc) {
-      this.filteredInterventions.sort((o1, o2) =>
-        (o1 as any)[propertyName].localeCompare((o2 as any)[propertyName]));
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            (o1 as any)[propertyName].localeCompare((o2 as any)[propertyName]))))
     } else {
-      this.filteredInterventions.sort((o1, o2) =>
-        (o2 as any)[propertyName].localeCompare((o1 as any)[propertyName]));
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            (o2 as any)[propertyName].localeCompare((o1 as any)[propertyName]))));
     }
   }
 
   sortByCountry(isAsc: boolean): void {
     if (isAsc) {
-      this.filteredInterventions.sort((o1, o2) =>
-        this.countryService.getCountryName(o1.InterventionCountryID)
-          .localeCompare(this.countryService.getCountryName(o2.InterventionCountryID)))
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            this.countryService.getCountryName(o1.InterventionCountryID)
+              .localeCompare(this.countryService.getCountryName(o2.InterventionCountryID)))));
     } else {
-      this.filteredInterventions.sort((o1, o2) =>
-        this.countryService.getCountryName(o2.InterventionCountryID)
-          .localeCompare(this.countryService.getCountryName(o1.InterventionCountryID)))
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            this.countryService.getCountryName(o2.InterventionCountryID)
+              .localeCompare(this.countryService.getCountryName(o1.InterventionCountryID)))));
     }
   }
 
   sortByStatus(isAsc: boolean): void {
     if (isAsc) {
-      this.filteredInterventions.sort((o1, o2) =>
-        this.workflowService.getWorkflowName(o1.workflowStateId).localeCompare(
-          this.workflowService.getWorkflowName(o2.workflowStateId)));
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            this.workflowService.getWorkflowName(o1.workflowStateId).localeCompare(
+              this.workflowService.getWorkflowName(o2.workflowStateId)))));
     } else {
-      this.filteredInterventions.sort((o1, o2) =>
-        this.workflowService.getWorkflowName(o2.workflowStateId)
-          .localeCompare(this.workflowService.getWorkflowName(o1.workflowStateId)));
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            this.workflowService.getWorkflowName(o2.workflowStateId).localeCompare(
+              this.workflowService.getWorkflowName(o1.workflowStateId)))));
     }
   }
 
   sortByUsers(isAsc: boolean): void {
     if (isAsc) {
-      this.filteredInterventions.sort((o1, o2) =>
-        this.userService.getUserName(o1.UpdatedUserID)
-          .localeCompare(this.userService.getUserName(o2.UpdatedUserID)));
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            this.userService.getUserName(o1.UpdatedUserID)
+              .localeCompare(this.userService.getUserName(o2.UpdatedUserID)))));
     } else {
-      this.filteredInterventions.sort((o1, o2) =>
-        this.userService.getUserName(o2.UpdatedUserID)
-          .localeCompare(this.userService.getUserName(o1.UpdatedUserID)));
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            this.userService.getUserName(o2.UpdatedUserID)
+              .localeCompare(this.userService.getUserName(o1.UpdatedUserID)))));
     }
   }
 
   sortByDate(isAsc: boolean): void {
     if (isAsc) {
-      this.filteredInterventions.sort((o1, o2) =>
-        o1.DateUpdated - o2.DateUpdated);
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            o1.DateUpdated - o2.DateUpdated)));
     } else {
-      this.filteredInterventions.sort((o1, o2) =>
-        o2.DateUpdated - o1.DateUpdated);
+      this.filteredInterventions$ = this.filteredInterventions$
+        .pipe(
+          map(interventions => interventions.sort((o1, o2) =>
+            o2.DateUpdated - o1.DateUpdated)));
     }
   }
 

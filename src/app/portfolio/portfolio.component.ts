@@ -65,7 +65,7 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   logInterventions(){
     // console.log(this.interventionService.interventions$);
-    return this.interventionService.interventions$;
+    return this.interventionService.getInterventions();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
