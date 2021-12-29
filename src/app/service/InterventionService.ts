@@ -15,12 +15,6 @@ import {Observable} from "rxjs";
 @Injectable()
 export class InterventionService {
 
-  // allInterventions: Intervention[] = [];
-  //
-  // filteredInterventions: Intervention[] = [];
-
-  // tempInterventionsBeforeStatusChange: Intervention[];
-
   isPagingMode: boolean = false;
 
   searchOptions: FormGroup;
@@ -43,36 +37,32 @@ export class InterventionService {
     this.filteredInterventions$ = this.http.get("/assets/data/response.json")
       .pipe(
         map((data: any) => {
-          return data.data.map((currentIntervention: any) =>
+          return data.data.map((currentIntervention: InterventionInterface) =>
             new Intervention(
-              (currentIntervention as InterventionInterface).ActualEndDate,
-              (currentIntervention as InterventionInterface).InterventionCode,
-              (currentIntervention as InterventionInterface).Description,
-              (currentIntervention as InterventionInterface).InterventionInstanceId,
-              (currentIntervention as InterventionInterface).InterventionID,
-              (currentIntervention as InterventionInterface).DateUpdated,
-              (currentIntervention as InterventionInterface).Title,
-              (currentIntervention as InterventionInterface).ShortName,
-              (currentIntervention as InterventionInterface).ActualStartDate,
-              (currentIntervention as InterventionInterface).interventionPartnerInstitutions,
-              (currentIntervention as InterventionInterface).lastActionComment,
-              (currentIntervention as InterventionInterface).workflowStateId,
-              (currentIntervention as InterventionInterface).InterventionCountryID,
-              (currentIntervention as InterventionInterface).ExternalReferenceNumber,
-              (currentIntervention as InterventionInterface).InterventionInstanceId,
-              (currentIntervention as InterventionInterface).SAEndDate,
-              (currentIntervention as InterventionInterface).CommericalName,
-              (currentIntervention as InterventionInterface).UpdatedUserID,
-              (currentIntervention as InterventionInterface).MasterID)
+              currentIntervention.ActualEndDate,
+              currentIntervention.InterventionCode,
+              currentIntervention.Description,
+              currentIntervention.InterventionInstanceId,
+              currentIntervention.InterventionID,
+              currentIntervention.DateUpdated,
+              currentIntervention.Title,
+              currentIntervention.ShortName,
+              currentIntervention.ActualStartDate,
+              currentIntervention.interventionPartnerInstitutions,
+              currentIntervention.lastActionComment,
+              currentIntervention.workflowStateId,
+              currentIntervention.InterventionCountryID,
+              currentIntervention.ExternalReferenceNumber,
+              currentIntervention.InterventionInstanceId,
+              currentIntervention.SAEndDate,
+              currentIntervention.CommericalName,
+              currentIntervention.UpdatedUserID,
+              currentIntervention.MasterID)
           );
         }),
         shareReplay({bufferSize: 1, refCount: true})
       )
       this.allInterventions$ = this.filteredInterventions$;
-  }
-
-  public getInterventions() {
-    return this.filteredInterventions$;
   }
 
   public getInterventionById(interventionId: number): Observable<Intervention> {
@@ -231,7 +221,8 @@ export class InterventionService {
         .pipe(
           map(interventions => interventions.sort((o1, o2) =>
             this.countryService.getCountryName(o1.InterventionCountryID)
-              .localeCompare(this.countryService.getCountryName(o2.InterventionCountryID)))));
+              .localeCompare(this.countryService.getCountryName(o2.InterventionCountryID))
+          )));
     } else {
       this.filteredInterventions$ = this.filteredInterventions$
         .pipe(

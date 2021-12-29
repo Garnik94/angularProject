@@ -45,24 +45,15 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.tempInterventionsBeforeSearch$ = this.interventionService.allInterventions$;
+    this.countOfPages = Array(1);
     zip(
     )
       .subscribe(allResponses => {
-
-
-          // this.totalLength = this.interventionService.filteredInterventions.length;
-          this.countOfPages = [1];
         }
       )
   }
 
-  logInterventions(){
-    // console.log(this.interventionService.interventions$);
-    return this.interventionService.getInterventions();
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.tempInterventionsBeforeSearch$ === undefined)
     this.interventionService.searchOptions = this.searchOptions;
     if (this.tempInterventionsBeforeSearch$ !== undefined){
       this.interventionService.filteredInterventions$ = this.tempInterventionsBeforeSearch$;
@@ -70,18 +61,18 @@ export class PortfolioComponent implements OnInit, OnChanges {
     this.interventionService.generalSearch();
   }
 
-  sliceFilteredData(): Observable<Array<Array<Observable<any>>>> {
+  sliceFilteredData(): Observable<Array<Intervention[]>> {
     return this.interventionService.filteredInterventions$
       .pipe(
-        map(interventions => {
+        map((interventions: any) => {
           let startIndex = 0;
           let endIndex = Number(this.countOfVisibleData.value);
           this.countOfPages.length = Math.ceil(interventions.length / Number(this.countOfVisibleData.value));
-          let slicedArray: Array<Array<Observable<Intervention[]>>> = [];
+          let slicedArray: Array<Intervention[]> = [];
           for (let i = 0; i < this.countOfPages.length; i++) {
-            // slicedArray.push(interventions.slice(startIndex, endIndex));
-            // startIndex = endIndex;
-            // endIndex += Number(this.countOfVisibleData.value);
+            slicedArray.push(interventions.slice(startIndex, endIndex));
+            startIndex = endIndex;
+            endIndex += Number(this.countOfVisibleData.value);
           }
           return slicedArray;
         })
@@ -95,11 +86,10 @@ export class PortfolioComponent implements OnInit, OnChanges {
       this.InterventionsBeforePaging$ = this.interventionService.filteredInterventions$;
     }
     this.interventionService.filteredInterventions$ = this.InterventionsBeforePaging$;
-    // console.log(this.interventionService.filteredInterventions);
-    this.interventionService.filteredInterventions$ = this.tempInterventionsBeforeSearch$;
-    // this.interventionService.filteredInterventions$ = this.sliceFilteredData()
-    //   .subscribe(slicedInterventions => ) [currentPage];
+    // this.interventionService.filteredInterventions$ = this.tempInterventionsBeforeSearch$;
+    this.interventionService.filteredInterventions$ = this.sliceFilteredData()
+      .pipe(
+        map(slicedInterventions => slicedInterventions[currentPage]));
     this.interventionService.isPagingMode = true;
   }
-
 }

@@ -3,7 +3,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {CountryInterface} from "../interfaces/CountryInterface";
-import {map} from "rxjs/operators";
+import {map, shareReplay} from "rxjs/operators";
 import {Intervention} from "../models/Intervention";
 
 @Injectable()
@@ -11,56 +11,48 @@ export class CountryService {
 
   countries: Country[] = [];
 
-  private countries$: Observable<Country>;
+  // public countries$: Observable<Country[]>;
 
   constructor(private http: HttpClient) {
+    // this.countries$ =
     this.http.get("/assets/data/Countries.json")
       .pipe(
         map((data: any) => {
-          return data.data.map((currentCountry: any) =>
+          return data.data.map((currentCountry: CountryInterface) =>
             new Country(
-              (currentCountry as CountryInterface).CountryId,
-              (currentCountry as CountryInterface).DeletedBy,
-              (currentCountry as CountryInterface).ISOcode,
-              (currentCountry as CountryInterface).name,
-              (currentCountry as CountryInterface).DeletedOn,
-              (currentCountry as CountryInterface).Level,
-              (currentCountry as CountryInterface).HasSpecificZone)
+              currentCountry.CountryId,
+              currentCountry.DeletedBy,
+              currentCountry.ISOcode,
+              currentCountry.name,
+              currentCountry.DeletedOn,
+              currentCountry.Level,
+              currentCountry.HasSpecificZone)
           );
-        })
-      )
-      .subscribe(countries => this.countries = countries);
+        }),
+        shareReplay({bufferSize: 1, refCount: true})
+      ).subscribe(countries => this.countries = countries)
   }
 
-  // public getCountries() {
-  //   this.countries$.subscribe((countries: any) => this.countries = countries);
-  // }
-
-  // public getCountries() {
-  //   return this.http.get("/assets/data/Countries.json")
-  //     .pipe(
-  //       map((data: any) => {
-  //         return data.data.map((currentCountry: any) =>
-  //           new Country(
-  //             (currentCountry as CountryInterface).CountryId,
-  //             (currentCountry as CountryInterface).DeletedBy,
-  //             (currentCountry as CountryInterface).ISOcode,
-  //             (currentCountry as CountryInterface).name,
-  //             (currentCountry as CountryInterface).DeletedOn,
-  //             (currentCountry as CountryInterface).Level,
-  //             (currentCountry as CountryInterface).HasSpecificZone)
-  //         );
-  //       })
-  //     )
-  // }
-
   public getCountryById(countryId: number): Country {
-    return this.countries.find(currentCountry => {
-      return currentCountry.countryId === countryId
-    });
+    return this.countries
+      .find(currentCountry => currentCountry.countryId === countryId)
   }
 
   public getCountryName(countryId: number): string {
-    return this.getCountryById(countryId).name["3"];
+    return this.getCountryById(countryId).name["3"]
   }
+
+  // public getCountryById(countryId: number): Observable<Country> {
+  //   return this.countries$
+  //     .pipe(
+  //       map(countries => countries
+  //         .find(currentCountry => currentCountry.countryId === countryId)))
+  // }
+  //
+  // public getCountryName(countryId: number): Observable<string> {
+  //   return this.getCountryById(countryId)
+  //     .pipe(
+  //       map(country => country.name["3"]))
+  // }
+
 }

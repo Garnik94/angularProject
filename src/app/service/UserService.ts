@@ -9,35 +9,20 @@ export class UserService {
 
   users: User[] = [];
 
-  constructor(private http: HttpClient) {
+  constructor(public http: HttpClient) {
     this.http.get("/assets/data/Users.json")
       .pipe(
         map((data: any) => {
-          return data.data.map((currentUser: any) =>
+          return data.data.map((currentUser: UserInterface) =>
             new User(
-              (currentUser as UserInterface).Email,
-              (currentUser as UserInterface).UserID,
-              (currentUser as UserInterface).name,
-              (currentUser as UserInterface).StatusID)
+              currentUser.Email,
+              currentUser.UserID,
+              currentUser.name,
+              currentUser.StatusID)
           );
         })
       ).subscribe(users => this.users = users);
   }
-
-  // public getUsers() {
-  //   return this.http.get("/assets/data/Users.json")
-  //     .pipe(
-  //       map((data: any) => {
-  //         return data.data.map((currentUser: any) =>
-  //           new User(
-  //             (currentUser as UserInterface).Email,
-  //             (currentUser as UserInterface).UserID,
-  //             (currentUser as UserInterface).name,
-  //             (currentUser as UserInterface).StatusID)
-  //         );
-  //       })
-  //     )
-  // }
 
   public getUserById(userId: number): User {
     return this.users.find(currentUser => currentUser.UserID === userId);
