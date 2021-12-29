@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Intervention} from "../models/Intervention";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {InterventionService} from "../service/InterventionService";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-intervention-details',
@@ -11,7 +12,6 @@ import {InterventionService} from "../service/InterventionService";
 export class InterventionDetailsComponent implements OnInit {
 
   intervention: Intervention;
-
 
   constructor(
     private router: Router,
@@ -23,7 +23,8 @@ export class InterventionDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.forEach((params: Params) => {
       let id = +params["id"];
-      this.intervention = this.interventionService.getInterventionById(id);
+      this.interventionService.getInterventionById(id)
+        .subscribe(intervention => this.intervention = intervention);
     })
   }
 

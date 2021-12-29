@@ -28,7 +28,8 @@ export class CountryService {
               (currentCountry as CountryInterface).HasSpecificZone)
           );
         })
-      ).subscribe(countries => this.countries = countries);
+      )
+      .subscribe(countries => this.countries = countries);
   }
 
   // public getCountries() {

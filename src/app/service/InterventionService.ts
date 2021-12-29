@@ -15,11 +15,11 @@ import {Observable} from "rxjs";
 @Injectable()
 export class InterventionService {
 
-  allInterventions: Intervention[] = [];
+  // allInterventions: Intervention[] = [];
+  //
+  // filteredInterventions: Intervention[] = [];
 
-  filteredInterventions: Intervention[] = [];
-
-  tempInterventionsBeforeStatusChange: Intervention[];
+  // tempInterventionsBeforeStatusChange: Intervention[];
 
   isPagingMode: boolean = false;
 
@@ -30,9 +30,9 @@ export class InterventionService {
 
   isSearchMode = false;
 
-  private filteredInterventions$: Observable<Intervention[]>;
-  private allInterventions$: Observable<Intervention[]>;
-  private tempInterventionsBeforeStatusChange$: Observable<Intervention[]>;
+  public filteredInterventions$: Observable<Intervention[]>;
+  public allInterventions$: Observable<Intervention[]>;
+  public tempInterventionsBeforeStatusChange$: Observable<Intervention[]>;
 
   constructor(private http: HttpClient,
               public countryService: CountryService,
@@ -75,9 +75,11 @@ export class InterventionService {
     return this.filteredInterventions$;
   }
 
-  public getInterventionById(interventionId: number): Intervention {
-    return this.filteredInterventions
-      .find(currentIntervention => currentIntervention.InterventionInstanceId === interventionId);
+  public getInterventionById(interventionId: number): Observable<Intervention> {
+    return this.filteredInterventions$
+      .pipe(
+        map(interventions => interventions
+          .find(currentIntervention => currentIntervention.InterventionInstanceId === interventionId)))
   }
 
   onStatusChange(): void {
