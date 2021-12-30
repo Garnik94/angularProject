@@ -94,6 +94,5 @@ export class PortfolioComponent implements OnInit, OnChanges {
             return slicedInterventions[currentPage]
           }
         ));
-
   }
 }

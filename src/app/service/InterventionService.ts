@@ -73,7 +73,7 @@ export class InterventionService {
   }
 
   onStatusChange(): void {
-    this.isPagingMode = false;
+    // this.isPagingMode = false;
     if (!this.isSearchMode) {
       this.tempInterventionsBeforeStatusChange$ = this.filteredInterventions$;
     }
@@ -177,6 +177,7 @@ export class InterventionService {
   /**------------------------------------------------------------------------------------------------------------*/
 
   public sortInterventions(fieldName: string, isAsc: boolean) {
+    // this.isPagingMode = false;
     switch (fieldName) {
       case "InterventionCode":
         this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
