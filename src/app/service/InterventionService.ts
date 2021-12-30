@@ -73,6 +73,7 @@ export class InterventionService {
   }
 
   onStatusChange(): void {
+    this.isPagingMode = false;
     if (!this.isSearchMode) {
       this.tempInterventionsBeforeStatusChange$ = this.filteredInterventions$;
     }

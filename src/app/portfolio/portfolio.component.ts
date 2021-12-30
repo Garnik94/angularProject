@@ -55,7 +55,7 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.interventionService.searchOptions = this.searchOptions;
-    if (this.tempInterventionsBeforeSearch$ !== undefined){
+    if (this.tempInterventionsBeforeSearch$ !== undefined) {
       this.interventionService.filteredInterventions$ = this.tempInterventionsBeforeSearch$;
     }
     this.interventionService.generalSearch();
@@ -82,14 +82,18 @@ export class PortfolioComponent implements OnInit, OnChanges {
   InterventionsBeforePaging$: Observable<Intervention[]>;
 
   getCurrentPage(currentPage: number) {
-    if (!this.interventionService.isPagingMode){
+    if (!this.interventionService.isPagingMode) {
       this.InterventionsBeforePaging$ = this.interventionService.filteredInterventions$;
     }
     this.interventionService.filteredInterventions$ = this.InterventionsBeforePaging$;
     // this.interventionService.filteredInterventions$ = this.tempInterventionsBeforeSearch$;
     this.interventionService.filteredInterventions$ = this.sliceFilteredData()
       .pipe(
-        map(slicedInterventions => slicedInterventions[currentPage]));
-    this.interventionService.isPagingMode = true;
+        map(slicedInterventions => {
+            this.interventionService.isPagingMode = true;
+            return slicedInterventions[currentPage]
+          }
+        ));
+
   }
 }

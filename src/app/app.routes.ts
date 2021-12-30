@@ -13,15 +13,18 @@ export const routes: Routes = [
   },
 
   {
-    path: "interventions",
-    component: HomeComponent
+    path: "interventions", children: [
+      {path: "", component: HomeComponent},
+      {path: "id", component: InterventionDetailsComponent}
+    ]
+
   },
 
-  // TODO: Use lazy load
-  {
-    path: "intervention/:id",
-    component: InterventionDetailsComponent
-  },
+  // // TODO: Use lazy load
+  // {
+  //   path: "intervention/:id",
+  //   component: InterventionDetailsComponent
+  // },
 
   {
     path: "createNewIntervention",
