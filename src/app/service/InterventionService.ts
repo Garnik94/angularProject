@@ -2,12 +2,11 @@ import {Intervention} from "../models/Intervention";
 import {Country} from "../models/Country";
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {InterventionInterface} from "../interfaces/InterventionInterface";
 import {map, shareReplay} from "rxjs/operators";
 import {CountryService} from "./CountryService";
 import {UserService} from "./UserService";
 import {WorkflowService} from "./WorkflowService";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {User} from "../models/User";
 import {Observable, zip} from "rxjs";
@@ -34,31 +33,7 @@ export class InterventionService {
 
     this.filteredInterventions$ = this.http.get("/assets/data/response.json")
       .pipe(
-        map((data: any) => {
-          return data.data
-            .map((currentIntervention: Intervention) =>
-            new Intervention(
-              currentIntervention.ActualEndDate,
-              currentIntervention.InterventionCode,
-              currentIntervention.Description,
-              currentIntervention.InterventionInstanceId,
-              currentIntervention.InterventionID,
-              currentIntervention.DateUpdated,
-              currentIntervention.Title,
-              currentIntervention.ShortName,
-              currentIntervention.ActualStartDate,
-              currentIntervention.interventionPartnerInstitutions,
-              currentIntervention.lastActionComment,
-              currentIntervention.workflowStateId,
-              currentIntervention.InterventionCountryID,
-              currentIntervention.ExternalReferenceNumber,
-              currentIntervention.InterventionInstanceId,
-              currentIntervention.SAEndDate,
-              currentIntervention.CommericalName,
-              currentIntervention.UpdatedUserID,
-              currentIntervention.MasterID)
-          );
-        }),
+        map((data: any) => data.data),
         shareReplay({bufferSize: 1, refCount: true})
       )
     this.allInterventions$ = this.filteredInterventions$;

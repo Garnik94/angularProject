@@ -1,7 +1,6 @@
 import {User} from "../models/User";
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {UserInterface} from "../interfaces/UserInterface";
 import {map, shareReplay} from "rxjs/operators";
 import {Observable} from "rxjs";
 
@@ -13,15 +12,7 @@ export class UserService {
   constructor(public http: HttpClient) {
     this._users$ = this.http.get("/assets/data/Users.json")
       .pipe(
-        map((data: any) => {
-          return data.data.map((currentUser: UserInterface) =>
-            new User(
-              currentUser.Email,
-              currentUser.UserID,
-              currentUser.name,
-              currentUser.StatusID)
-          );
-        }),
+        map((data: any) => data.data),
         shareReplay({bufferSize: 1, refCount: true})
       )
   }

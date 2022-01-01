@@ -1,7 +1,6 @@
 import {WorkflowStates} from "../models/WorkflowState";
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {WorkflowStateInterface} from "../interfaces/WorkflowStateInterface";
 import {map, shareReplay} from "rxjs/operators";
 import {Observable} from "rxjs";
 
@@ -13,13 +12,7 @@ export class WorkflowService {
   constructor(private http: HttpClient) {
     this._workflowStates$ = this.http.get("/assets/data/WorkflowStates.json")
       .pipe(
-        map((data: any) => {
-          return data.data.map((currentWorkflow: WorkflowStateInterface) =>
-            new WorkflowStates(
-              currentWorkflow.WFSTATEID,
-              currentWorkflow.name
-            ));
-        }),
+        map((data: any) =>data.data),
         shareReplay({bufferSize: 1, refCount: true})
       )
   }
