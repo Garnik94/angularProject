@@ -27,8 +27,8 @@
       <br><br>
       Country<br>
       <select formControlName="Country">
-        <option *ngFor="let currentCountry of countryService.countries"
-                [value]="currentCountry.countryId">{{currentCountry.name["3"]}}</option>
+        <option *ngFor="let currentCountry of countryService.countries$ | async"
+                [value]="currentCountry.CountryId">{{currentCountry.name["3"]}}</option>
       </select>
       <div *ngIf="newInterventionForm.get('Country').hasError('required') &&
       newInterventionForm.get('Country').touched"
@@ -38,7 +38,7 @@
       <br><br>
       Status<br>
       <select formControlName="Status">
-        <option *ngFor="let currentWorkflow of workflowService.workflowStates"
+        <option *ngFor="let currentWorkflow of workflowService.workflowStates$ | async"
                 [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
       </select>
       <div *ngIf="newInterventionForm.get('Status').hasError('required') &&
@@ -49,7 +49,7 @@
       <br><br>
       Last Updated By<br>
       <select formControlName="User">
-        <option *ngFor="let currentUser of userService.users"
+        <option *ngFor="let currentUser of userService.users$ | async"
                 [value]="currentUser.UserID">{{currentUser.name["3"]}}</option>
       </select>
       <div *ngIf="newInterventionForm.get('User').hasError('required') &&

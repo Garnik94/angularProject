@@ -1,16 +1,10 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges
-} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Intervention} from "../models/Intervention";
 import {InterventionService} from "../service/InterventionService";
 import {WorkflowService} from "../service/WorkflowService";
 import {UserService} from "../service/UserService";
 import {FormControl, FormGroup} from "@angular/forms";
-import {Observable, zip} from "rxjs";
+import {Observable} from "rxjs";
 import {CountryService} from "../service/CountryService";
 import {Router} from "@angular/router";
 import {map} from "rxjs/operators";
@@ -34,6 +28,8 @@ export class PortfolioComponent implements OnInit, OnChanges {
   totalLength: number;
   page: number = 1;
 
+  selectedStatus: FormControl = new FormControl(0);
+
   constructor(
     public interventionService: InterventionService,
     public countryService: CountryService,
@@ -44,13 +40,11 @@ export class PortfolioComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.selectedStatus.valueChanges.subscribe(selectedValue => {
+      this.interventionService.onStatusChange(selectedValue);
+    })
     this.tempInterventionsBeforeSearch$ = this.interventionService.allInterventions$;
     this.countOfPages = Array(1);
-    zip(
-    )
-      .subscribe(allResponses => {
-        }
-      )
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -58,7 +52,7 @@ export class PortfolioComponent implements OnInit, OnChanges {
     if (this.tempInterventionsBeforeSearch$ !== undefined) {
       this.interventionService.filteredInterventions$ = this.tempInterventionsBeforeSearch$;
     }
-    this.interventionService.generalSearch();
+    this.interventionService.generalSearch(this.selectedStatus);
   }
 
   sliceFilteredData(): Observable<Array<Intervention[]>> {

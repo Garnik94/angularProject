@@ -2,9 +2,9 @@
   <div class="flex">
     <div class="statusStyle">
       Status
-      <select [formControl]="interventionService.selectStatus" (change)="interventionService.onStatusChange()">
+      <select [formControl]="selectedStatus" (change)="interventionService.onStatusChange(selectedStatus)">
         <option [value]="'0'" selected>All Statuses</option>
-        <option *ngFor="let currentWorkflow of workflowService.workflowStates"
+        <option *ngFor="let currentWorkflow of workflowService.workflowStates$ | async"
                 [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
       </select>
     </div>
@@ -61,9 +61,9 @@
              routerActive="active">{{currentIntervention.InterventionCode}}</a></td>
       <td>{{currentIntervention.ShortName}}</td>
       <td>{{currentIntervention.CommericalName}}</td>
-      <td>{{currentIntervention.InterventionCountryID | getName: "Country"}}</td>
-      <td>{{currentIntervention.workflowStateId | getName : "Workflow"}}</td>
-      <td>{{currentIntervention.UpdatedUserID | getName : "User"}}</td>
+      <td>{{(currentIntervention.InterventionCountryID | getName: "Country") | async}}</td>
+      <td>{{currentIntervention.workflowStateId | getName : "Workflow" | async}}</td>
+      <td>{{currentIntervention.UpdatedUserID | getName : "User" | async}}</td>
       <td>{{currentIntervention.DateUpdated | date : "dd/MM/yyy"}}</td>
     </tr>
     </tbody>

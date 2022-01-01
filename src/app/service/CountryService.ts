@@ -9,16 +9,14 @@ import {Intervention} from "../models/Intervention";
 @Injectable()
 export class CountryService {
 
-  countries: Country[] = [];
+  private _countries$: Observable<Country[]>;
 
-  // public countries$: Observable<Country[]>;
-
-  constructor(private http: HttpClient) {
-    // this.countries$ =
-    this.http.get("/assets/data/Countries.json")
+  constructor(private _http: HttpClient) {
+    this._countries$ = this._http.get("/assets/data/Countries.json")
       .pipe(
         map((data: any) => {
-          return data.data.map((currentCountry: CountryInterface) =>
+          return data.data
+            .map((currentCountry: Country) =>
             new Country(
               currentCountry.CountryId,
               currentCountry.DeletedBy,
@@ -30,16 +28,20 @@ export class CountryService {
           );
         }),
         shareReplay({bufferSize: 1, refCount: true})
-      ).subscribe(countries => this.countries = countries)
+      )
   }
 
-  public getCountryById(countryId: number): Country {
-    return this.countries
-      .find(currentCountry => currentCountry.countryId === countryId)
+
+  get countries$(): Observable<Country[]> {
+    return this._countries$;
   }
 
-  public getCountryName(countryId: number): string {
-    return this.getCountryById(countryId).name["3"]
+  public getCountryById(countryId: number, countries: Country[]): Country {
+    return countries.find(currentCountry => currentCountry.CountryId === countryId)
+  }
+
+  public getCountryName(countryId: number, countries: Country[]): string {
+    return this.getCountryById(countryId, countries).name["3"]
   }
 
   // public getCountryById(countryId: number): Observable<Country> {

@@ -14,8 +14,8 @@
         <p>Country</p>
         <select class="inputStyle" formControlName="countryOption">
           <option [value]="'Select One'">--Select One--</option>
-          <option *ngFor="let currentCountry of countryService.countries"
-                  [value]="currentCountry.countryId">{{currentCountry.name["3"]}}</option>
+          <option *ngFor="let currentCountry of countryService.countries$ | async"
+                  [value]="currentCountry.CountryId">{{currentCountry.name["3"]}}</option>
         </select>
       </div>
     </div>

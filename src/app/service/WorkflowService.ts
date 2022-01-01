@@ -2,15 +2,16 @@ import {WorkflowStates} from "../models/WorkflowState";
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {WorkflowStateInterface} from "../interfaces/WorkflowStateInterface";
-import {map} from "rxjs/operators";
+import {map, shareReplay} from "rxjs/operators";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class WorkflowService {
 
-  workflowStates: WorkflowStates[] = [];
+  private _workflowStates$: Observable<WorkflowStates[]>;
 
   constructor(private http: HttpClient) {
-    this.http.get("/assets/data/WorkflowStates.json")
+    this._workflowStates$ = this.http.get("/assets/data/WorkflowStates.json")
       .pipe(
         map((data: any) => {
           return data.data.map((currentWorkflow: WorkflowStateInterface) =>
@@ -18,15 +19,21 @@ export class WorkflowService {
               currentWorkflow.WFSTATEID,
               currentWorkflow.name
             ));
-        })
-      ).subscribe(workflowStates => this.workflowStates = workflowStates);
+        }),
+        shareReplay({bufferSize: 1, refCount: true})
+      )
   }
 
-  public getWorkflowById(workflowId: number): WorkflowStates {
-    return this.workflowStates.find(currentWorkflow => currentWorkflow.WFSTATEID === workflowId);
+  get workflowStates$(): Observable<WorkflowStates[]> {
+    return this._workflowStates$;
   }
 
-  public getWorkflowName(workflowId: number): string {
-    return this.getWorkflowById(workflowId).name["3"];
+  public getWorkflowById(workflowId: number, workflowStates: WorkflowStates[]): WorkflowStates {
+    return workflowStates.find(currentWorkflow => currentWorkflow.WFSTATEID === workflowId);
   }
+
+  public getWorkflowName(workflowId: number, workflowStates: WorkflowStates[]): string {
+    return this.getWorkflowById(workflowId, workflowStates).name["3"];
+  }
+
 }

@@ -1,38 +1,38 @@
 export class Country {
 
   constructor(
-    private _countryId: number,
-    private _deletedBy: any,
-    private _isoCode: string,
+    private _CountryId: number,
+    private _DeletedBy: any,
+    private _ISOcode: string,
     private _name: { "3": string; "4": string },
-    private _deletedOn: any,
-    private _level: number,
-    private _hasSpecificZone: boolean) {
+    private _DeletedOn: any,
+    private _Level: number,
+    private _HasSpecificZone: boolean) {
   }
 
 
-  get countryId(): number {
-    return this._countryId;
+  get CountryId(): number {
+    return this._CountryId;
   }
 
-  set countryId(value: number) {
-    this._countryId = value;
+  set CountryId(value: number) {
+    this._CountryId = value;
   }
 
-  get deletedBy(): any {
-    return this._deletedBy;
+  get DeletedBy(): any {
+    return this._DeletedBy;
   }
 
-  set deletedBy(value: any) {
-    this._deletedBy = value;
+  set DeletedBy(value: any) {
+    this._DeletedBy = value;
   }
 
-  get isoCode(): string {
-    return this._isoCode;
+  get ISOcode(): string {
+    return this._ISOcode;
   }
 
-  set isoCode(value: string) {
-    this._isoCode = value;
+  set ISOcode(value: string) {
+    this._ISOcode = value;
   }
 
   get name(): { "3": string; "4": string } {
@@ -43,27 +43,27 @@ export class Country {
     this._name = value;
   }
 
-  get deletedOn(): any {
-    return this._deletedOn;
+  get DeletedOn(): any {
+    return this._DeletedOn;
   }
 
-  set deletedOn(value: any) {
-    this._deletedOn = value;
+  set DeletedOn(value: any) {
+    this._DeletedOn = value;
   }
 
-  get level(): number {
-    return this._level;
+  get Level(): number {
+    return this._Level;
   }
 
-  set level(value: number) {
-    this._level = value;
+  set Level(value: number) {
+    this._Level = value;
   }
 
-  get hasSpecificZone(): boolean {
-    return this._hasSpecificZone;
+  get HasSpecificZone(): boolean {
+    return this._HasSpecificZone;
   }
 
-  set hasSpecificZone(value: boolean) {
-    this._hasSpecificZone = value;
+  set HasSpecificZone(value: boolean) {
+    this._HasSpecificZone = value;
   }
 }

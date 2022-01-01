@@ -10,7 +10,8 @@ import {WorkflowService} from "./WorkflowService";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {User} from "../models/User";
-import {Observable} from "rxjs";
+import {Observable, zip} from "rxjs";
+import {WorkflowStates} from "../models/WorkflowState";
 
 @Injectable()
 export class InterventionService {
@@ -18,9 +19,6 @@ export class InterventionService {
   isPagingMode: boolean = false;
 
   searchOptions: FormGroup;
-
-  // TODO: Move to component
-  selectStatus: FormControl = new FormControl(0);
 
   isSearchMode = false;
 
@@ -37,7 +35,8 @@ export class InterventionService {
     this.filteredInterventions$ = this.http.get("/assets/data/response.json")
       .pipe(
         map((data: any) => {
-          return data.data.map((currentIntervention: InterventionInterface) =>
+          return data.data
+            .map((currentIntervention: Intervention) =>
             new Intervention(
               currentIntervention.ActualEndDate,
               currentIntervention.InterventionCode,
@@ -62,7 +61,7 @@ export class InterventionService {
         }),
         shareReplay({bufferSize: 1, refCount: true})
       )
-      this.allInterventions$ = this.filteredInterventions$;
+    this.allInterventions$ = this.filteredInterventions$;
   }
 
   public getInterventionById(interventionId: number): Observable<Intervention> {
@@ -72,12 +71,12 @@ export class InterventionService {
           .find(currentIntervention => currentIntervention.InterventionInstanceId === interventionId)))
   }
 
-  onStatusChange(): void {
+  onStatusChange(selectedStatus: FormControl): void {
     // this.isPagingMode = false;
     if (!this.isSearchMode) {
       this.tempInterventionsBeforeStatusChange$ = this.filteredInterventions$;
     }
-    if (Number(this.selectStatus.value) === 0) {
+    if (Number(selectedStatus.value) === 0) {
       this.filteredInterventions$ = this.tempInterventionsBeforeStatusChange$;
       this.isSearchMode = false;
       return;
@@ -86,7 +85,7 @@ export class InterventionService {
         .pipe(
           map(interventions => interventions
             .filter(currentIntervention => {
-              return currentIntervention.workflowStateId === Number(this.selectStatus.value);
+              return currentIntervention.workflowStateId === Number(selectedStatus.value);
             })
           )
         )
@@ -96,15 +95,16 @@ export class InterventionService {
 
   /**-------------Filter By Search Fields--------------*/
 
-  generalSearch(): void {
+  generalSearch(selectedStatus: FormControl): void {
     this.isPagingMode = false;
     if (this.searchOptions === null && this.isSearchMode) {
       this.isSearchMode = false;
       this.filteredInterventions$ = this.allInterventions$;
-      this.onStatusChange();
+      this.onStatusChange(selectedStatus);
     } else if (this.searchOptions === null && !this.isSearchMode) {
       this.filteredInterventions$ = this.allInterventions$;
     } else {
+      this.onStatusChange(selectedStatus);
       this.filterBYCountry();
       this.filterByKeywordOption();
       this.filterByActualDate();
@@ -113,13 +113,12 @@ export class InterventionService {
 
   filterBYCountry(): void {
     const searchOptions = this.searchOptions?.value;
-    this.onStatusChange();
     if (searchOptions?.countryOption && searchOptions?.countryOption !== 0) {
       this.filteredInterventions$ = this.filteredInterventions$
         .pipe(
           map(interventions => interventions.filter(currentIntervention => {
-              return currentIntervention.InterventionCountryID === Number(searchOptions.countryOption);
-            })));
+            return currentIntervention.InterventionCountryID === Number(searchOptions.countryOption);
+          })));
     }
   }
 
@@ -160,47 +159,52 @@ export class InterventionService {
   filterByFromDate(searchOptions: any) {
     this.filteredInterventions$ = this.filteredInterventions$.pipe(
       map(interventions => interventions.filter(intervention => {
-          const actualStartDate = new Date(intervention.ActualStartDate);
-          return new Date(searchOptions.dateFrom) < actualStartDate;
+        const actualStartDate = new Date(intervention.ActualStartDate);
+        return new Date(searchOptions.dateFrom) < actualStartDate;
       })))
   }
 
   filterByToDate(searchOptions: any) {
     this.filteredInterventions$ = this.filteredInterventions$.pipe(
       map(interventions => interventions.filter(intervention => {
-          const actualStartDate = new Date(intervention.ActualStartDate);
-          return actualStartDate < new Date(searchOptions.dateTo);
-        })))
+        const actualStartDate = new Date(intervention.ActualStartDate);
+        return actualStartDate < new Date(searchOptions.dateTo);
+      })))
   }
 
 
   /**------------------------------------------------------------------------------------------------------------*/
 
   public sortInterventions(fieldName: string, isAsc: boolean) {
-    // this.isPagingMode = false;
-    switch (fieldName) {
-      case "InterventionCode":
-        this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
-        break;
-      case "ShortName":
-        this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
-        break;
-      case "CommericalName":
-        this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
-        break;
-      case "Country":
-        this.sortByCountry(isAsc);
-        break;
-      case "Status":
-        this.sortByStatus(isAsc);
-        break;
-      case "User":
-        this.sortByUsers(isAsc);
-        break;
-      case "UpdateOn":
-        this.sortByDate(isAsc);
-        break;
-    }
+    zip(
+      this.countryService.countries$,
+      this.workflowService.workflowStates$,
+      this.userService.users$
+    ).subscribe(allResponse => {
+        switch (fieldName) {
+          case "InterventionCode":
+            this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
+            break;
+          case "ShortName":
+            this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
+            break;
+          case "CommericalName":
+            this.sortByCode_ShortName_CommericalName(isAsc, fieldName);
+            break;
+          case "Country":
+            this.sortByCountry(isAsc, allResponse[0]);
+            break;
+          case "Status":
+            this.sortByStatus(isAsc, allResponse[1]);
+            break;
+          case "User":
+            this.sortByUsers(isAsc, allResponse[2]);
+            break;
+          case "UpdateOn":
+            this.sortByDate(isAsc);
+            break;
+        }
+      })
   }
 
   sortByCode_ShortName_CommericalName(isAsc: boolean, propertyName: string): void {
@@ -217,53 +221,53 @@ export class InterventionService {
     }
   }
 
-  sortByCountry(isAsc: boolean): void {
-    if (isAsc) {
-      this.filteredInterventions$ = this.filteredInterventions$
-        .pipe(
-          map(interventions => interventions.sort((o1, o2) =>
-            this.countryService.getCountryName(o1.InterventionCountryID)
-              .localeCompare(this.countryService.getCountryName(o2.InterventionCountryID))
-          )));
-    } else {
-      this.filteredInterventions$ = this.filteredInterventions$
-        .pipe(
-          map(interventions => interventions.sort((o1, o2) =>
-            this.countryService.getCountryName(o2.InterventionCountryID)
-              .localeCompare(this.countryService.getCountryName(o1.InterventionCountryID)))));
-    }
+  sortByCountry(isAsc: boolean, countries: Country[]): void {
+      if (isAsc) {
+        this.filteredInterventions$ = this.filteredInterventions$
+          .pipe(
+            map(interventions => interventions.sort((o1, o2) =>
+              this.countryService.getCountryName(o1.InterventionCountryID, countries)
+                .localeCompare(this.countryService.getCountryName(o2.InterventionCountryID, countries))
+            )));
+      } else {
+        this.filteredInterventions$ = this.filteredInterventions$
+          .pipe(
+            map(interventions => interventions.sort((o1, o2) =>
+              this.countryService.getCountryName(o2.InterventionCountryID, countries)
+                .localeCompare(this.countryService.getCountryName(o1.InterventionCountryID, countries)))));
+      }
   }
 
-  sortByStatus(isAsc: boolean): void {
-    if (isAsc) {
-      this.filteredInterventions$ = this.filteredInterventions$
-        .pipe(
-          map(interventions => interventions.sort((o1, o2) =>
-            this.workflowService.getWorkflowName(o1.workflowStateId).localeCompare(
-              this.workflowService.getWorkflowName(o2.workflowStateId)))));
-    } else {
-      this.filteredInterventions$ = this.filteredInterventions$
-        .pipe(
-          map(interventions => interventions.sort((o1, o2) =>
-            this.workflowService.getWorkflowName(o2.workflowStateId).localeCompare(
-              this.workflowService.getWorkflowName(o1.workflowStateId)))));
-    }
+  sortByStatus(isAsc: boolean, workflowStates: WorkflowStates[]): void {
+        if (isAsc) {
+          this.filteredInterventions$ = this.filteredInterventions$
+            .pipe(
+              map(interventions => interventions.sort((o1, o2) =>
+                this.workflowService.getWorkflowName(o1.workflowStateId, workflowStates).localeCompare(
+                  this.workflowService.getWorkflowName(o2.workflowStateId, workflowStates)))));
+        } else {
+          this.filteredInterventions$ = this.filteredInterventions$
+            .pipe(
+              map(interventions => interventions.sort((o1, o2) =>
+                this.workflowService.getWorkflowName(o2.workflowStateId, workflowStates).localeCompare(
+                  this.workflowService.getWorkflowName(o1.workflowStateId, workflowStates)))));
+        }
   }
 
-  sortByUsers(isAsc: boolean): void {
-    if (isAsc) {
-      this.filteredInterventions$ = this.filteredInterventions$
-        .pipe(
-          map(interventions => interventions.sort((o1, o2) =>
-            this.userService.getUserName(o1.UpdatedUserID)
-              .localeCompare(this.userService.getUserName(o2.UpdatedUserID)))));
-    } else {
-      this.filteredInterventions$ = this.filteredInterventions$
-        .pipe(
-          map(interventions => interventions.sort((o1, o2) =>
-            this.userService.getUserName(o2.UpdatedUserID)
-              .localeCompare(this.userService.getUserName(o1.UpdatedUserID)))));
-    }
+  sortByUsers(isAsc: boolean, users: User[]): void {
+        if (isAsc) {
+          this.filteredInterventions$ = this.filteredInterventions$
+            .pipe(
+              map(interventions => interventions.sort((o1, o2) =>
+                this.userService.getUserName(o1.UpdatedUserID, users)
+                  .localeCompare(this.userService.getUserName(o2.UpdatedUserID, users)))));
+        } else {
+          this.filteredInterventions$ = this.filteredInterventions$
+            .pipe(
+              map(interventions => interventions.sort((o1, o2) =>
+                this.userService.getUserName(o2.UpdatedUserID, users)
+                  .localeCompare(this.userService.getUserName(o1.UpdatedUserID, users)))));
+        }
   }
 
   sortByDate(isAsc: boolean): void {
