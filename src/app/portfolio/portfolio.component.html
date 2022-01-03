@@ -1,80 +1,95 @@
-<div>
-  <div class="flex">
-    <div class="statusStyle">
-      Status
-      <select [formControl]="selectedStatus" (change)="interventionService.onStatusChange(selectedStatus)">
-        <option [value]="'0'" selected>All Statuses</option>
-        <option *ngFor="let currentWorkflow of workflowService.workflowStates$ | async"
-                [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
-      </select>
-    </div>
-
-    <div>
-      <button class="searchButtonStyle" (click)="interventionService.onSelectCreateNewIntervention()">Create New Intervention</button>
-    </div>
+<div class="flex">
+  <div class="statusStyle">
+    Status
+    <select [formControl]="selectedStatus" (change)="interventionService.onStatusChange(selectedStatus)">
+      <option [value]="'0'" selected>All Statuses</option>
+      <option *ngFor="let currentWorkflow of workflowService.workflowStates$ | async"
+              [value]="currentWorkflow.WFSTATEID">{{currentWorkflow.name["3"]}}</option>
+    </select>
   </div>
 
-  <table>
-    <thead>
-    <tr>
-      <th>Code of the Intervention<br><br>
-        <button (click)="interventionService.sortInterventions('InterventionCode', true)">↑</button>
-        <button (click)="interventionService.sortInterventions('InterventionCode', false)">↓</button>
-      </th>
-      <th>Short Name<br><br>
-        <button (click)="interventionService.sortInterventions('ShortName', true)">↑</button>
-        <button (click)="interventionService.sortInterventions('ShortName', false)">↓</button>
-      </th>
-      <th>Official Intervention Name<br><br>
-        <button (click)="interventionService.sortInterventions('CommericalName', true)">↑</button>
-        <button (click)="interventionService.sortInterventions('CommericalName', false)">↓
-        </button>
-      </th>
-      <th>Country<br><br>
-        <button (click)="interventionService.sortInterventions('Country', true)">↑</button>
-        <button (click)="interventionService.sortInterventions('Country', false)">↓</button>
-      </th>
-      <th>Status<br><br>
-        <button (click)="interventionService.sortInterventions('Status', true)">↑</button>
-        <button (click)="interventionService.sortInterventions('Status', false)">↓</button>
-      </th>
-      <th>Last Updated By<br><br>
-        <button (click)="interventionService.sortInterventions('User', true)">↑</button>
-        <button (click)="interventionService.sortInterventions('User', false)">↓</button>
-      </th>
-      <th>Last Updated On<br><br>
-        <button (click)="interventionService.sortInterventions('UpdateOn', true)">↑</button>
-        <button (click)="interventionService.sortInterventions('UpdateOn', false)">↓</button>
-      </th>
-    </tr>
-    </thead>
+  <div>
+    <button class="searchButtonStyle" (click)="interventionService.onSelectCreateNewIntervention()">Create New
+      Intervention
+    </button>
+  </div>
+</div>
 
-    <tbody>
-    <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions$ | async">
-      <!--    | paginate: { itemsPerPage: 10,-->
-      <!--      currentPage: page,-->
-      <!--      totalItems: totalLength-->
-      <!--      }">-->
+<table>
+  <thead>
+  <tr>
+    <th>Code of the Intervention<br><br>
+      <button (click)="interventionService.sortInterventions('InterventionCode', true)">↑</button>
+      <button (click)="interventionService.sortInterventions('InterventionCode', false)">↓</button>
+    </th>
+    <th>Short Name<br><br>
+      <button (click)="interventionService.sortInterventions('ShortName', true)">↑</button>
+      <button (click)="interventionService.sortInterventions('ShortName', false)">↓</button>
+    </th>
+    <th>Official Intervention Name<br><br>
+      <button (click)="interventionService.sortInterventions('CommericalName', true)">↑</button>
+      <button (click)="interventionService.sortInterventions('CommericalName', false)">↓
+      </button>
+    </th>
+    <th>Country<br><br>
+      <button (click)="interventionService.sortInterventions('Country', true)">↑</button>
+      <button (click)="interventionService.sortInterventions('Country', false)">↓</button>
+    </th>
+    <th>Status<br><br>
+      <button (click)="interventionService.sortInterventions('Status', true)">↑</button>
+      <button (click)="interventionService.sortInterventions('Status', false)">↓</button>
+    </th>
+    <th>Last Updated By<br><br>
+      <button (click)="interventionService.sortInterventions('User', true)">↑</button>
+      <button (click)="interventionService.sortInterventions('User', false)">↓</button>
+    </th>
+    <th>Last Updated On<br><br>
+      <button (click)="interventionService.sortInterventions('UpdateOn', true)">↑</button>
+      <button (click)="interventionService.sortInterventions('UpdateOn', false)">↓</button>
+    </th>
+  </tr>
+  </thead>
 
-      <!--      <td><a (click)="interventionService.onSelect(currentIntervention)" routerLink="/intervention/{{currentIntervention.InterventionInstanceId}}" routerActive="active">{{currentIntervention.InterventionCode}}</a></td>-->
-      <td><a [routerLink]='["/intervention/", currentIntervention.InterventionInstanceId]'
-             routerActive="active">{{currentIntervention.InterventionCode}}</a></td>
-      <td>{{currentIntervention.ShortName}}</td>
-      <td>{{currentIntervention.CommericalName}}</td>
-      <td>{{(currentIntervention.InterventionCountryID | getName: "Country") | async}}</td>
-      <td>{{currentIntervention.workflowStateId | getName : "Workflow" | async}}</td>
-      <td>{{currentIntervention.UpdatedUserID | getName : "User" | async}}</td>
-      <td>{{currentIntervention.DateUpdated | date : "dd/MM/yyy"}}</td>
-    </tr>
-    </tbody>
-  </table>
-  <!--  <pagination-controls (pageChange)="page = $event"></pagination-controls>-->
+  <tbody>
+  <tr hover *ngFor="let currentIntervention of interventionService.filteredInterventions$ | async
+          | paginate: { itemsPerPage: itemPerPage.value,
+            currentPage: page,
+            totalItems: totalLength
+            }">
+
+    <!--      <td><a (click)="interventionService.onSelect(currentIntervention)" routerLink="/intervention/{{currentIntervention.InterventionInstanceId}}" routerActive="active">{{currentIntervention.InterventionCode}}</a></td>-->
+    <td><a [routerLink]='["/intervention/", currentIntervention.InterventionInstanceId]'
+           routerActive="active">{{currentIntervention.InterventionCode}}</a></td>
+    <td>{{currentIntervention.ShortName}}</td>
+    <td>{{currentIntervention.CommericalName}}</td>
+    <td>{{(currentIntervention.InterventionCountryID | getName: "Country") | async}}</td>
+    <td>{{currentIntervention.workflowStateId | getName : "Workflow" | async}}</td>
+    <td>{{currentIntervention.UpdatedUserID | getName : "User" | async}}</td>
+    <td>{{currentIntervention.DateUpdated | date : "dd/MM/yyy"}}</td>
+  </tr>
+  </tbody>
+</table>
+<div class="flex">
+  <select [formControl]="itemPerPage">
+    <!--      <option [value]="'Shaw all'">Shaw all</option>-->
+    <!--      <option [value]="(interventionService.allInterventions$ | async)?.length">Shaw all</option>-->
+    <option [value]="10">10</option>
+    <option [value]="5">5</option>
+    <option [value]="3">3</option>
+    <option [value]="2">2</option>
+    <option [value]="1">1</option>
+  </select>
+
+  <pagination-controls (pageChange)="page = $event"></pagination-controls>
 
 </div>
 
 <div class="flex">
-  <div class="flex">
-    <select [formControl]="countOfVisibleData" (change)="getCurrentPage(0)">
+
+  <div>
+    Custom pagination <br>
+    <select style="height: 30px" [formControl]="countOfVisibleData" (change)="getCurrentPage(0)">
+      <!--      <option [value]="'Shaw all'">Shaw all</option>-->
       <option [value]="(interventionService.allInterventions$ | async)?.length">Shaw all</option>
       <option [value]="5">5</option>
       <option [value]="3">3</option>
@@ -84,6 +99,7 @@
   </div>
 
   <div class="flex">
-    <button class="pagingButtonStyle" *ngFor="let page of countOfPages; let i = index" (click)="getCurrentPage(i)">{{i + 1}}</button>
+    <button class="pagingButtonStyle" *ngFor="let page of countOfPages; let i = index"
+            (click)="getCurrentPage(i)">{{i + 1}}</button>
   </div>
 </div>

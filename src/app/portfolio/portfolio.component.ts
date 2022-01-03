@@ -21,12 +21,12 @@ export class PortfolioComponent implements OnInit, OnChanges {
 
   tempInterventionsBeforeSearch$: Observable<Intervention[]>;
 
-  countOfVisibleData: FormControl = new FormControl(this.interventionService.filteredInterventions$
-    .subscribe(interventions => interventions.length));
+  countOfVisibleData: FormControl = new FormControl("Shaw all");
 
   countOfPages: number[];
   totalLength: number;
   page: number = 1;
+  itemPerPage: FormControl = new FormControl(10);
 
   selectedStatus: FormControl = new FormControl(0);
 
@@ -40,11 +40,10 @@ export class PortfolioComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.selectedStatus.valueChanges.subscribe(selectedValue => {
-      this.interventionService.onStatusChange(selectedValue);
-    })
     this.tempInterventionsBeforeSearch$ = this.interventionService.allInterventions$;
     this.countOfPages = Array(1);
+
+    // this.interventionService.allInterventions$.subscribe(array => this.countOfVisibleData.setValue(array.length))
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -59,6 +58,9 @@ export class PortfolioComponent implements OnInit, OnChanges {
     return this.interventionService.filteredInterventions$
       .pipe(
         map((interventions: any) => {
+          if (this.countOfVisibleData.value === "Shaw all"){
+            this.countOfVisibleData.setValue(interventions.length);
+          }
           let startIndex = 0;
           let endIndex = Number(this.countOfVisibleData.value);
           this.countOfPages.length = Math.ceil(interventions.length / Number(this.countOfVisibleData.value));
@@ -69,24 +71,28 @@ export class PortfolioComponent implements OnInit, OnChanges {
             endIndex += Number(this.countOfVisibleData.value);
           }
           return slicedArray;
-        })
-      )
+        }));
   }
 
   InterventionsBeforePaging$: Observable<Intervention[]>;
 
   getCurrentPage(currentPage: number) {
+    // console.log(this.interventionService.isPagingMode);
+    // if (this.interventionService.isSearchMode){
+    //   this.interventionService.isPagingMode = false;
+    // }
     if (!this.interventionService.isPagingMode) {
       this.InterventionsBeforePaging$ = this.interventionService.filteredInterventions$;
+      this.interventionService.isPagingMode = true;
     }
     this.interventionService.filteredInterventions$ = this.InterventionsBeforePaging$;
     // this.interventionService.filteredInterventions$ = this.tempInterventionsBeforeSearch$;
     this.interventionService.filteredInterventions$ = this.sliceFilteredData()
       .pipe(
         map(slicedInterventions => {
-            this.interventionService.isPagingMode = true;
-            return slicedInterventions[currentPage]
-          }
-        ));
+          this.interventionService.isPagingMode = true;
+          return slicedInterventions[currentPage]
+        }));
   }
+
 }

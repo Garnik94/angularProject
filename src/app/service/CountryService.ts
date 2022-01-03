@@ -17,7 +17,6 @@ export class CountryService {
       )
   }
 
-
   get countries$(): Observable<Country[]> {
     return this._countries$;
   }

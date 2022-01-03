@@ -47,7 +47,6 @@ export class InterventionService {
   }
 
   onStatusChange(selectedStatus: FormControl): void {
-    // this.isPagingMode = false;
     if (!this.isSearchMode) {
       this.tempInterventionsBeforeStatusChange$ = this.filteredInterventions$;
     }
@@ -61,23 +60,23 @@ export class InterventionService {
           map(interventions => interventions
             .filter(currentIntervention => {
               return currentIntervention.workflowStateId === Number(selectedStatus.value);
-            })
-          )
-        )
+            })));
       this.isSearchMode = true;
     }
+    // this.isPagingMode = false;
   }
 
   /**-------------Filter By Search Fields--------------*/
 
   generalSearch(selectedStatus: FormControl): void {
-    this.isPagingMode = false;
+    // this.isPagingMode = false;
     if (this.searchOptions === null && this.isSearchMode) {
       this.isSearchMode = false;
       this.filteredInterventions$ = this.allInterventions$;
       this.onStatusChange(selectedStatus);
     } else if (this.searchOptions === null && !this.isSearchMode) {
       this.filteredInterventions$ = this.allInterventions$;
+      this.isPagingMode = false;
     } else {
       this.onStatusChange(selectedStatus);
       this.filterBYCountry();
@@ -136,7 +135,7 @@ export class InterventionService {
       map(interventions => interventions.filter(intervention => {
         const actualStartDate = new Date(intervention.ActualStartDate);
         return new Date(searchOptions.dateFrom) < actualStartDate;
-      })))
+      })));
   }
 
   filterByToDate(searchOptions: any) {
@@ -144,11 +143,8 @@ export class InterventionService {
       map(interventions => interventions.filter(intervention => {
         const actualStartDate = new Date(intervention.ActualStartDate);
         return actualStartDate < new Date(searchOptions.dateTo);
-      })))
+      })));
   }
-
-
-  /**------------------------------------------------------------------------------------------------------------*/
 
   public sortInterventions(fieldName: string, isAsc: boolean) {
     zip(
@@ -179,7 +175,7 @@ export class InterventionService {
             this.sortByDate(isAsc);
             break;
         }
-      })
+      });
   }
 
   sortByCode_ShortName_CommericalName(isAsc: boolean, propertyName: string): void {
@@ -259,30 +255,8 @@ export class InterventionService {
     }
   }
 
-  /**-------------------------------------------------------------------------*/
-
   onSelectCreateNewIntervention() {
     this.router.navigate(["createNewIntervention"]);
   }
-
-  // public getInterventions(sortingOption: { fieldName: string, isAsc: boolean }) {
-  //   return this.http.get("/assets/data/response.json")
-  //     .pipe(
-  //       map((data: any) => {
-  //         //
-  //         return data.data;
-  //       })
-  //     )
-  // }
-  //
-  // public getInterventions(sortingOption: { fieldName: string, isAsc: boolean }, filterData: any, statusId: number) {
-  //   return this.http.get("/assets/data/response.json")
-  //     .pipe(
-  //       map((data: any) => {
-  //         //
-  //         return data.data;
-  //       })
-  //     )
-  // }
 
 }

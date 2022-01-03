@@ -67,11 +67,11 @@ export class CreateNewInterventionComponent implements OnInit {
   }
 
   goToPortfolio() {
-    this.router.navigate(["interventions"])
+    this.router.navigate(["home"])
   }
 
   onSelect(selectedIntervention: Intervention) {
-    this.router.navigate(["intervention", selectedIntervention.InterventionInstanceId]);
+    this.router.navigate(["home", selectedIntervention.InterventionInstanceId]);
   }
 
 }

@@ -23,12 +23,12 @@ const routes: Routes = [
 
   {
     path: "",
-    redirectTo: "interventions",
+    redirectTo: "home",
     pathMatch: "full"
   },
 
   {
-    path: "interventions",
+    path: "home",
     loadChildren: () => import("./home/home.module")
       .then(response => response.HomeModule)
   },

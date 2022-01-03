@@ -29,7 +29,7 @@ export class InterventionDetailsComponent implements OnInit {
   }
 
   goToPortfolio() {
-    this.router.navigate(["interventions"])
+    this.router.navigate(["home"])
   }
 
 }
